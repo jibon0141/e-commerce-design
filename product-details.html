@@ -1,543 +1,632 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>JBL Flip 6 Portable Bluetooth Speaker — EasyMart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          screens: {
+            'xs': '375px',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <title>JBL Flip 6 — Premium Store</title>
+
   <style>
-    @keyframes revealUp {
-      from { opacity: 0; transform: translateY(60px); }
-      to   { opacity: 1; transform: translateY(0); }
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-sizing: border-box;
     }
-    .reveal {
-      opacity: 0;
-      transform: translateY(60px);
+
+    body {
+      overflow-x: hidden;
+      width: 100%;
     }
-    .reveal.visible {
-      animation: revealUp 0.7s ease-out forwards;
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
     }
+
+    /* ========== ZOOM PANEL ========== */
     #zoomPanel {
       display: none;
       opacity: 0;
-      transform: scale(0.92) translateX(8px);
-      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: scale(0.96);
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #zoomPanel.active {
       opacity: 1;
-      transform: scale(1) translateX(0);
+      transform: scale(1);
     }
-    @media (min-width: 1024px) {
-      #zoomPanel {
-        transform-origin: left center;
-        transform: scale(0.92) translateX(8px);
-      }
-      #zoomPanel.active {
-        transform: scale(1) translateX(0);
-      }
+
+    /* ========== PRODUCT CARD IMAGE HOVER ========== */
+    .card-img {
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @media (max-width: 1023px) {
-      #zoomPanel {
-        transform-origin: top center;
-        transform: scale(0.92) translateY(8px);
-      }
-      #zoomPanel.active {
-        transform: scale(1) translateY(0);
-      }
+    .group:hover .card-img {
+      transform: scale(1.08);
+    }
+
+    /* ========== SHIMMER ========== */
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* ========== TOAST ========== */
+    #toast {
+      transform: translateY(150%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+    #toast.show {
+      transform: translateY(0);
+    }
+
+    .tab-btn.active {
+      color: #4f46e5;
+      border-bottom-color: #4f46e5;
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
+<body class="min-h-screen bg-slate-50/70 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
 
-  <div class="hidden sm:block bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 text-white text-[11px] font-medium tracking-wide text-center py-2">
-    <span class="inline-flex items-center gap-1.5">Free shipping on orders over ৳50 <span class="w-1 h-1 bg-white/40 rounded-full"></span> 30-day hassle-free returns <span class="w-1 h-1 bg-white/40 rounded-full"></span> Use code <span class="px-2 py-0.5 bg-white/15 rounded-full font-semibold tracking-wider">VOLT10</span> for 10% off</span>
+  <!-- ===== FLOATING TOAST ===== -->
+  <div id="toast" class="fixed bottom-5 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 pointer-events-none opacity-0">
+    <div id="toast-icon" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-white text-xs flex-shrink-0 shadow-md">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="flex-1 min-w-0">
+      <h5 id="toast-title" class="text-[11px] font-bold uppercase tracking-wider text-indigo-300 truncate">Notice</h5>
+      <p id="toast-msg" class="text-xs text-slate-200 font-medium truncate">Item added!</p>
+    </div>
   </div>
 
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-100/80 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16">
-      <div class="flex items-center justify-between h-16 sm:h-20">
+  <!-- ===== TOP ANNOUNCEMENT BAR ===== -->
+  <div class="w-full overflow-hidden bg-gradient-to-r from-indigo-900 via-indigo-700 to-violet-800 text-white text-[11px] sm:text-xs font-medium py-2 px-3 shadow-sm z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 bg-amber-400/20 text-amber-300 rounded-full font-bold uppercase text-[9px] tracking-wider border border-amber-400/30">Official Store</span>
+        <span class="truncate">Free express delivery on orders over ৳500</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4 text-indigo-200 text-xs">
+        <span>Use voucher <b class="text-amber-300 font-extrabold">EASY20</b> for 20% off</span>
+      </div>
+    </div>
+  </div>
 
-        <a href="index.html" class="flex items-center gap-2.5 group">
-          <div class="relative w-10 h-10 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:shadow-xl group-hover:shadow-indigo-300 transition-all duration-300 overflow-hidden">
-            <svg class="relative z-10" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <!-- ===== HEADER / NAVBAR ===== -->
+  <header class="sticky top-0 z-40 glass-nav transition-all duration-300 w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-20">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
+          <div class="w-8 h-8 sm:w-11 sm:h-11 bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-all">
+            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
               <path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
-            <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300"></div>
           </div>
-          <div class="flex flex-col leading-tight">
-            <span class="font-bold text-xl sm:text-2xl text-slate-800 tracking-tight">easy<span class="text-indigo-600">mart</span></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-medium tracking-[0.2em] uppercase -mt-0.5">Shop Smarter</span>
+          <div class="flex flex-col">
+            <span class="font-extrabold text-lg sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">mart</span></span>
+            <span class="text-[8px] sm:text-[9px] text-slate-400 font-bold tracking-[0.2em] uppercase hidden xs:block mt-0.5">Premium Store</span>
           </div>
         </a>
 
-        <nav class="hidden lg:flex items-center gap-1">
-          <a href="index.html" class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-full transition-all">Home</a>
-          <a href="#" class="px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 rounded-full transition-colors">Shop</a>
-          <a href="#" class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-full transition-all">Deals</a>
-          <a href="#" class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-full transition-all">Support</a>
-          <a href="#" class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-full transition-all">About</a>
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-full shadow-sm">Shop All</a>
+          <a href="index.html#collections-section" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Categories</a>
+          <a href="index.html#flash-deal" class="px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-white rounded-full transition-all">Flash Deals</a>
         </nav>
 
-        <div class="flex items-center gap-0.5 sm:gap-1.5">
-          <a href="#" class="hidden sm:flex relative w-9 h-9 items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors rounded-full hover:bg-indigo-50">
-            <i class="fa-regular fa-heart text-sm sm:text-base"></i>
-            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm shadow-indigo-200">3</span>
+        <!-- Right Side Icons & Actions -->
+        <div class="flex items-center gap-1 sm:gap-2.5">
+          <!-- Desktop Wishlist (Hidden on mobile) -->
+          <button onclick="triggerToast('Wishlist', 'Saved to wishlist!')" class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl bg-slate-100/80 hover:bg-rose-50 text-slate-600 hover:text-rose-500 transition-all" aria-label="Wishlist">
+            <i class="fa-regular fa-heart text-base"></i>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">3</span>
+          </button>
+
+          <!-- Desktop Cart (Hidden on mobile) -->
+          <button onclick="triggerToast('Shopping Cart', '2 items in your bag.')" class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl bg-slate-100/80 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 transition-all" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping text-base"></i>
+            <span id="header-cart-count" class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">2</span>
+          </button>
+
+          <!-- Desktop Back to Store -->
+          <a href="index.html" class="hidden lg:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 px-4 py-2.5 rounded-xl transition-all">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i> <span>Back to Store</span>
           </a>
-          <a href="#" class="relative w-9 h-9 flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors rounded-full hover:bg-indigo-50">
-            <i class="fa-solid fa-code-compare text-sm sm:text-base"></i>
-            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm shadow-indigo-200">1</span>
-          </a>
-          <a href="#" class="relative w-9 h-9 flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors rounded-full hover:bg-indigo-50">
-            <i class="fa-solid fa-bag-shopping text-sm sm:text-base"></i>
-            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm shadow-rose-200">2</span>
-          </a>
-          <div class="hidden lg:flex items-center gap-2.5 pl-4 sm:pl-5 border-l border-slate-200">
-            <a href="#" class="text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors">Sign In</a>
-            <a href="#" class="text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 px-5 py-2 rounded-full transition-all shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300">Get Started</a>
-          </div>
-          <button id="menu-btn" class="flex lg:hidden w-9 h-9 items-center justify-center text-slate-500 hover:text-indigo-600 transition-colors rounded-full hover:bg-indigo-50/60">
-            <i id="menu-icon" class="fa-solid fa-bars text-base"></i>
+
+          <!-- Mobile Menu Hamburger Button -->
+          <button id="menu-btn" class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl sm:rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200/80 shadow-sm" aria-label="Open Menu">
+            <i id="menu-icon" class="fa-solid fa-bars text-sm sm:text-base"></i>
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Mobile 3-Dot Dropdown Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200/80 bg-white/98 backdrop-blur-xl px-4 py-4 space-y-3 shadow-2xl transition-all">
+      <!-- Quick Action Cards (Cart, Wishlist, Back) -->
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="triggerToast('Shopping Cart', '2 items in your cart.'); toggleMobileMenu();" class="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 transition-all border border-indigo-100 relative">
+          <span class="absolute top-2 right-3 w-4 h-4 bg-indigo-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">2</span>
+          <i class="fa-solid fa-bag-shopping text-base mb-1"></i>
+          <span class="text-[11px] font-bold">Cart (2)</span>
+        </button>
+
+        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();" class="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-rose-50/80 hover:bg-rose-100 text-rose-600 transition-all border border-rose-100 relative">
+          <span class="absolute top-2 right-3 w-4 h-4 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">3</span>
+          <i class="fa-regular fa-heart text-base mb-1"></i>
+          <span class="text-[11px] font-bold">Wishlist (3)</span>
+        </button>
+
+        <a href="index.html" class="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-slate-100/80 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200">
+          <i class="fa-solid fa-arrow-left text-base mb-1"></i>
+          <span class="text-[11px] font-bold">All Store</span>
+        </a>
+      </div>
+
+      <div class="h-px bg-slate-100 my-1"></div>
+
+      <!-- Navigation Links -->
+      <div class="space-y-1">
+        <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-bold text-indigo-600 bg-indigo-50/80 rounded-xl">
+          <i class="fa-solid fa-house w-4 text-center"></i> Home Store
+        </a>
+        <a href="shop.html" class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> All Products
+        </a>
+        <a href="index.html#flash-deal" class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
+          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Today's Deals
+        </a>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-shield-check text-indigo-500"></i> Official 1-Year Warranty</span>
       </div>
     </div>
   </header>
 
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 py-6 sm:py-10">
-    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-6 sm:mb-8">
+  <!-- ===== BREADCRUMB ===== -->
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4">
+    <nav class="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-400 font-medium truncate">
       <a href="index.html" class="hover:text-indigo-600 transition-colors">Home</a>
-      <i class="fa-solid fa-chevron-right text-[9px]"></i>
-      <a href="#" class="hover:text-indigo-600 transition-colors">Shop</a>
-      <i class="fa-solid fa-chevron-right text-[9px]"></i>
-      <a href="#" class="hover:text-indigo-600 transition-colors">Speakers</a>
-      <i class="fa-solid fa-chevron-right text-[9px]"></i>
-      <span class="text-slate-600 font-medium">JBL Flip 6</span>
+      <i class="fa-solid fa-chevron-right text-[7px] text-slate-300"></i>
+      <a href="index.html#collections-section" class="hover:text-indigo-600 transition-colors">Audio</a>
+      <i class="fa-solid fa-chevron-right text-[7px] text-slate-300"></i>
+      <span class="text-slate-800 font-bold truncate">JBL Flip 6</span>
     </nav>
+  </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10 lg:gap-14">
-      <div class="reveal relative z-30">
-        <div class="flex-1 min-w-0">
-          <div class="relative bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden" id="zoomContainer">
-            <span class="absolute top-4 left-4 z-20 px-3 py-1 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-indigo-200">New</span>
-            <a href="#" class="absolute top-4 right-4 z-20 w-9 h-9 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white hover:shadow-md hover:text-rose-500 text-slate-400 transition-all"><i class="fa-regular fa-heart text-lg"></i></a>
-            <img id="mainImage" class="w-full h-[300px] sm:h-[420px] lg:h-[500px] object-contain p-6 sm:p-10 lg:p-14 cursor-crosshair" src="images/JBL Flip 6.png" alt="JBL Flip 6">
-          </div>
-        </div>
-        <div id="zoomPanel" class="relative lg:absolute lg:left-[calc(100%+16px)] lg:top-0 w-full lg:w-[300px] rounded-2xl overflow-hidden mt-3 lg:mt-0" style="z-index: 9999; background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%); box-shadow: 0 20px 60px -8px rgba(79,70,229,0.2), 0 8px 20px -6px rgba(0,0,0,0.08); border: 1px solid rgba(99,102,241,0.12);">
-          <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-600 z-10"></div>
-          <div class="absolute top-2 right-2 z-10 w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-xs border border-white/50"><i class="fa-solid fa-search-plus text-[9px] text-indigo-600"></i></div>
-          <div class="absolute bottom-2 left-2 z-10 px-2 py-[3px] bg-white/75 backdrop-blur-sm rounded-full text-[8px] font-bold text-slate-500 tracking-widest shadow-xs border border-white/40">3× ZOOM</div>
-          <div id="zoomLens" class="w-full h-[280px] sm:h-[380px] lg:h-[460px] bg-no-repeat" style="background-image: url('images/JBL Flip 6.png'); background-size: 300%; background-position: center;"></div>
-        </div>
-        <div class="flex items-center gap-3 mt-4">
-          <button class="w-16 sm:w-20 h-16 sm:h-20 rounded-xl border-2 border-indigo-400 bg-white shadow-sm overflow-hidden flex-shrink-0 transition-all hover:shadow-md">
-            <img class="w-full h-full object-contain p-2" src="images/JBL Flip 6.png" alt="thumb">
+  <!-- ===== PRODUCT SHOWCASE SECTION ===== -->
+  <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
+
+      <!-- LEFT: IMAGE GALLERY & SHOWCASE -->
+      <div class="lg:col-span-6 relative">
+        <div class="relative w-full aspect-[16/10] sm:aspect-[16/11] bg-slate-950 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-md overflow-hidden flex items-center justify-center" id="zoomContainer">
+          <span class="absolute top-3.5 left-3.5 z-20 px-2.5 py-1 bg-white/95 backdrop-blur-md text-indigo-700 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider rounded-lg border border-indigo-100 shadow-sm flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Official Warranty
+          </span>
+          <button onclick="triggerToast('Wishlist', 'JBL Flip 6 added to favorites!')" class="absolute top-3.5 right-3.5 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-md text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shadow-sm border border-slate-200/60" aria-label="Favorite">
+            <i class="fa-regular fa-heart text-xs sm:text-base"></i>
           </button>
-          <button class="w-16 sm:w-20 h-16 sm:h-20 rounded-xl border border-slate-200 bg-white overflow-hidden flex-shrink-0 transition-all hover:border-slate-300 hover:shadow-sm">
-            <img class="w-full h-full object-contain p-2" src="images/JBL Flip 6.png" alt="thumb">
+
+          <!-- Main Product Image (Edge to edge, large, crisp) -->
+          <img id="mainImage" src="images/JBL Flip 6.png" alt="JBL Flip 6" class="w-full h-full object-cover cursor-crosshair transition-transform duration-500">
+
+          <div class="hidden lg:flex absolute bottom-3.5 right-4 text-[10px] text-white/90 font-bold items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 shadow-sm z-20">
+            <i class="fa-solid fa-magnifying-glass-plus text-indigo-400"></i> Hover to zoom 3×
+          </div>
+        </div>
+
+        <!-- 3X ZOOM PANEL (Desktop only) -->
+        <div id="zoomPanel" class="absolute top-0 left-full ml-4 w-[360px] h-[360px] rounded-3xl overflow-hidden bg-white shadow-2xl border border-indigo-100 z-50 pointer-events-none hidden lg:block">
+          <div id="zoomLens" class="w-full h-full bg-no-repeat" style="background-image: url('images/JBL Flip 6.png'); background-size: 300%; background-position: center;"></div>
+        </div>
+
+        <!-- Thumbnail Selector -->
+        <div class="flex items-center gap-2.5 sm:gap-3 mt-3 sm:mt-4">
+          <button class="thumb-btn active w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border-2 border-indigo-600 bg-slate-950 overflow-hidden shadow-sm transition-all" data-src="images/JBL Flip 6.png">
+            <img src="images/JBL Flip 6.png" alt="thumb 1" class="w-full h-full object-cover">
           </button>
-          <button class="w-16 sm:w-20 h-16 sm:h-20 rounded-xl border border-slate-200 bg-white overflow-hidden flex-shrink-0 transition-all hover:border-slate-300 hover:shadow-sm">
-            <img class="w-full h-full object-contain p-2" src="images/JBL Flip 6.png" alt="thumb">
+          <button class="thumb-btn w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden hover:border-indigo-400 transition-all opacity-75 hover:opacity-100" data-src="images/Sony WH-1000XM5.png">
+            <img src="images/Sony WH-1000XM5.png" alt="thumb 2" class="w-full h-full object-cover">
+          </button>
+          <button class="thumb-btn w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden hover:border-indigo-400 transition-all opacity-75 hover:opacity-100" data-src="images/Amazon Echo (4th Gen).png">
+            <img src="images/Amazon Echo (4th Gen).png" alt="thumb 3" class="w-full h-full object-cover">
           </button>
         </div>
       </div>
 
-      <div class="reveal flex flex-col">
-        <div class="flex items-center gap-2 text-amber-400 text-xs sm:text-sm mb-2">
-          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-alt"></i>
-          <span class="text-slate-400 text-xs ml-1">4.5 <span class="text-slate-300">(128 reviews)</span></span>
-        </div>
+      <!-- RIGHT: DETAILS & ACTIONS -->
+      <div class="lg:col-span-6 flex flex-col justify-center">
 
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 tracking-tight leading-tight">JBL Flip 6</h1>
-        <p class="text-sm sm:text-base text-slate-400 mt-2">Portable Bluetooth Speaker — Bold Bass, 12H Battery, IP67 Waterproof</p>
-
-        <div class="flex items-center gap-3 mt-4 sm:mt-5">
-          <span class="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">৳80.00</span>
-          <span class="text-lg sm:text-xl text-slate-300 line-through">৳99</span>
-          <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-[11px] sm:text-xs font-bold rounded-full">-19%</span>
-        </div>
-
-        <hr class="my-4 sm:my-6 border-slate-100">
-
-        <div class="space-y-3">
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Key Features</h3>
-          <ul class="space-y-2">
-            <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-check text-emerald-500 mt-0.5 text-xs sm:text-sm"></i>
-              <span>Bold JBL Original Pro Sound with deep bass</span>
-            </li>
-            <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-check text-emerald-500 mt-0.5 text-xs sm:text-sm"></i>
-              <span>IP67 waterproof & dustproof — take it anywhere</span>
-            </li>
-            <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-check text-emerald-500 mt-0.5 text-xs sm:text-sm"></i>
-              <span>12 hours of playtime on a single charge</span>
-            </li>
-            <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-check text-emerald-500 mt-0.5 text-xs sm:text-sm"></i>
-              <span>Bluetooth 5.1 for seamless wireless streaming</span>
-            </li>
-            <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-check text-emerald-500 mt-0.5 text-xs sm:text-sm"></i>
-              <span>PartyBoost for linking multiple speakers</span>
-            </li>
-          </ul>
-        </div>
-
-        <hr class="my-4 sm:my-6 border-slate-100">
-
-        <div>
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide mb-3">Color</h3>
-          <div class="flex items-center gap-3">
-            <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900 ring-2 ring-offset-2 ring-indigo-500 transition-all"></button>
-            <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
-            <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-500 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
-            <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">JBL Acoustic Pro</span>
+          <div class="flex items-center text-amber-400 text-xs gap-1 font-bold">
+            <i class="fa-solid fa-star text-[10px]"></i>
+            <span class="text-slate-800 font-extrabold">4.8</span>
+            <span class="text-slate-400 font-medium text-[10px] sm:text-xs">(145 ratings)</span>
           </div>
         </div>
 
-        <hr class="my-4 sm:my-6 border-slate-100">
+        <h1 class="text-xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          JBL Flip 6 Waterproof Portable Bluetooth Speaker
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
+          Bold JBL Original Pro Sound with exceptional clarity through its 2-way speaker system. IP67 dustproof and waterproof with 12 hours of continuous playtime.
+        </p>
 
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6">
-          <div class="flex items-center self-center sm:self-auto border border-slate-200 rounded-xl overflow-hidden">
-            <button class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors text-sm sm:text-base font-medium">−</button>
-            <span class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-slate-800 font-bold text-sm sm:text-base border-x border-slate-200">1</span>
-            <button class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors text-sm sm:text-base font-medium">+</button>
-          </div>
-          <button class="w-full sm:flex-1 bg-white border-2 border-indigo-200 hover:border-indigo-400 text-indigo-600 hover:text-indigo-700 text-sm sm:text-base font-semibold py-3 sm:py-3.5 rounded-xl transition-all hover:shadow-md"><i class="fa-solid fa-bag-shopping mr-2"></i>Add to Cart</button>
-          <button class="w-full sm:flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm sm:text-base font-semibold py-3 sm:py-3.5 rounded-xl transition-all shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300"><i class="fa-solid fa-bolt mr-2"></i>Buy Now</button>
+        <!-- Price block -->
+        <div class="flex items-baseline gap-2.5 mt-4 p-3.5 sm:p-4 bg-slate-100/70 rounded-2xl border border-slate-200/70">
+          <span class="text-2xl sm:text-4xl font-extrabold text-slate-900">৳8,500</span>
+          <span class="text-xs sm:text-base text-slate-400 line-through font-semibold">৳10,500</span>
+          <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-bold rounded-md ml-auto">-19% OFF</span>
         </div>
 
-        <div class="flex items-center gap-4 sm:gap-6 mt-4">
-          <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
-            <span class="font-medium text-emerald-600">In Stock</span>
+        <!-- Key specs chips -->
+        <div class="grid grid-cols-3 gap-2 my-4">
+          <div class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
+            <i class="fa-solid fa-water text-indigo-600 text-xs sm:text-sm mb-1 sm:mb-0"></i>
+            <span class="text-[10px] sm:text-xs font-semibold text-slate-700">IP67 Waterproof</span>
           </div>
-          <span class="text-slate-200">|</span>
-          <a href="#" class="text-xs sm:text-sm text-slate-500 hover:text-indigo-600 transition-colors"><i class="fa-regular fa-flag mr-1"></i>Free Shipping</a>
-          <span class="text-slate-200">|</span>
-          <a href="#" class="text-xs sm:text-sm text-slate-500 hover:text-indigo-600 transition-colors"><i class="fa-regular fa-clock mr-1"></i>30-Day Returns</a>
+          <div class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
+            <i class="fa-solid fa-battery-full text-emerald-600 text-xs sm:text-sm mb-1 sm:mb-0"></i>
+            <span class="text-[10px] sm:text-xs font-semibold text-slate-700">12H Playback</span>
+          </div>
+          <div class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
+            <i class="fa-solid fa-tower-broadcast text-violet-600 text-xs sm:text-sm mb-1 sm:mb-0"></i>
+            <span class="text-[10px] sm:text-xs font-semibold text-slate-700">Bluetooth 5.1</span>
+          </div>
         </div>
+
+        <!-- Color Selector -->
+        <div class="mb-4">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Color: <span id="selected-color-name" class="text-indigo-600 font-extrabold">Midnight Black</span></label>
+          <div class="flex items-center gap-2.5">
+            <button onclick="selectColor('Midnight Black', this)" class="color-btn active w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900 ring-2 ring-offset-2 ring-indigo-600 transition-all"></button>
+            <button onclick="selectColor('Ocean Blue', this)" class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+            <button onclick="selectColor('Fiery Red', this)" class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-red-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+            <button onclick="selectColor('Forest Green', this)" class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-700 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+          </div>
+        </div>
+
+        <!-- Quantity & Buy Actions (Mobile Friendly) -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-3 border-t border-slate-200">
+          <div class="flex items-center justify-between border-2 border-slate-200 rounded-xl p-1 w-full sm:w-32 bg-white h-11">
+            <button id="qty-minus" class="w-9 h-full rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm transition-colors">−</button>
+            <span id="qty-val" class="font-extrabold text-sm text-slate-900">1</span>
+            <button id="qty-plus" class="w-9 h-full rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm transition-colors">+</button>
+          </div>
+
+          <div class="flex items-center gap-2 flex-1">
+            <button onclick="addToCart()" class="flex-1 h-11 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm">
+              <i class="fa-solid fa-bag-shopping text-xs"></i> Add to Cart
+            </button>
+
+            <button onclick="triggerToast('Checkout', 'Proceeding to secure checkout...');" class="shimmer-btn flex-1 h-11 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all">
+              <i class="fa-solid fa-bolt text-xs"></i> Buy Now
+            </button>
+          </div>
+        </div>
+
+        <!-- In-stock badges -->
+        <div class="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-slate-500 pt-3 border-t border-slate-100">
+          <div class="flex items-center gap-1 text-emerald-600 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            In Stock
+          </div>
+          <span>•</span>
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-shield-check text-indigo-600"></i>
+            1-Year Official Warranty
+          </div>
+        </div>
+
       </div>
+
     </div>
   </section>
 
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 py-8 sm:py-14">
-    <div class="border-b border-slate-100">
-      <div class="flex gap-6 sm:gap-10">
-        <button class="pb-3 sm:pb-4 text-sm sm:text-base font-bold text-indigo-600 border-b-2 border-indigo-600 transition-colors">Description</button>
-        <button class="pb-3 sm:pb-4 text-sm sm:text-base font-medium text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-colors">Specifications</button>
-        <button class="pb-3 sm:pb-4 text-sm sm:text-base font-medium text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-colors">Reviews <span class="text-xs text-slate-300">(128)</span></button>
+  <!-- ===== TABS SECTION ===== -->
+  <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 border-t border-slate-200">
+    <div class="flex gap-4 sm:gap-8 border-b border-slate-200 mb-6 overflow-x-auto no-scrollbar">
+      <button class="tab-btn active pb-2.5 text-xs sm:text-sm font-extrabold text-indigo-600 border-b-2 border-indigo-600 whitespace-nowrap transition-colors" data-tab="tab-desc">Overview</button>
+      <button class="tab-btn pb-2.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-700 border-b-2 border-transparent whitespace-nowrap transition-colors" data-tab="tab-specs">Technical Specs</button>
+      <button class="tab-btn pb-2.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-700 border-b-2 border-transparent whitespace-nowrap transition-colors" data-tab="tab-box">In The Box</button>
+    </div>
+
+    <!-- TAB 1: Overview -->
+    <div id="tab-desc" class="tab-content">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <div>
+          <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-2">Louder, More Powerful Sound</h3>
+          <p class="mb-3">
+            The beat goes on with the JBL Flip 6 2-way speaker system, engineered to deliver loud, crystal clear, powerful sound. Its racetrack-shaped woofer delivers exceptional low frequencies and midrange, while a separate tweeter produces crisp, clear high-frequencies.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-2">IP67 Waterproof & Dustproof</h3>
+          <p>
+            To the pool. To the park. JBL Flip 6 is IP67 waterproof and dustproof, so you can bring your speaker anywhere. Up to 12 hours of playtime on a single charge.
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="py-6 sm:py-10">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10">
-        <div>
-          <h2 class="text-lg sm:text-xl font-bold text-slate-800 mb-3 sm:mb-4">Experience Sound Like Never Before</h2>
-          <p class="text-sm sm:text-base text-slate-500 leading-relaxed mb-4">The JBL Flip 6 delivers bold JBL Original Pro Sound with a powerful racetrack-shaped driver that pumps out surprisingly deep bass and crisp highs. Take the party anywhere with IP67 waterproof and dustproof design — rain, pool, or beach, this speaker handles it all.</p>
-          <p class="text-sm sm:text-base text-slate-500 leading-relaxed">With 12 hours of playtime, Bluetooth 5.1, and PartyBoost for multi-speaker linking, the Flip 6 is your ultimate companion for music on the go. The compact design fits easily in your bag, while the integrated loop lets you clip it to your backpack.</p>
+    <!-- TAB 2: Specs -->
+    <div id="tab-specs" class="tab-content hidden">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="flex justify-between py-2 border-b border-slate-200">
+          <span class="text-slate-400 font-semibold">Output Power</span>
+          <span class="text-slate-800 font-bold">20W RMS + 10W RMS</span>
         </div>
-        <div class="bg-slate-50 rounded-2xl p-5 sm:p-8 border border-slate-100">
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4">What's in the Box</h3>
-          <ul class="space-y-3">
-            <li class="flex items-center gap-3 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-box text-indigo-400 text-xs sm:text-sm w-4"></i>
-              <span>1 x JBL Flip 6 Speaker</span>
-            </li>
-            <li class="flex items-center gap-3 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-box text-indigo-400 text-xs sm:text-sm w-4"></i>
-              <span>1 x USB-C Charging Cable</span>
-            </li>
-            <li class="flex items-center gap-3 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-box text-indigo-400 text-xs sm:text-sm w-4"></i>
-              <span>1 x Quick Start Guide</span>
-            </li>
-            <li class="flex items-center gap-3 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-box text-indigo-400 text-xs sm:text-sm w-4"></i>
-              <span>1 x Warranty Card</span>
-            </li>
-            <li class="flex items-center gap-3 text-sm sm:text-base text-slate-600">
-              <i class="fa-solid fa-shield-halved text-indigo-400 text-xs sm:text-sm w-4"></i>
-              <span>1 Year Official Warranty</span>
-            </li>
-          </ul>
+        <div class="flex justify-between py-2 border-b border-slate-200">
+          <span class="text-slate-400 font-semibold">Frequency Response</span>
+          <span class="text-slate-800 font-bold">63 Hz - 20k Hz</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-200">
+          <span class="text-slate-400 font-semibold">Bluetooth</span>
+          <span class="text-slate-800 font-bold">5.1</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-slate-200">
+          <span class="text-slate-400 font-semibold">Charging</span>
+          <span class="text-slate-800 font-bold">2.5 hours via USB-C</span>
         </div>
       </div>
+    </div>
+
+    <!-- TAB 3: What's in the Box -->
+    <div id="tab-box" class="tab-content hidden">
+      <ul class="space-y-2 text-xs sm:text-sm text-slate-700">
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-box text-indigo-600"></i> 1 x JBL Flip 6 Bluetooth Speaker</li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-plug text-indigo-600"></i> 1 x Type-C Fast USB Cable</li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-book-open text-indigo-600"></i> 1 x Quick Start Guide</li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-shield text-indigo-600"></i> 1 x Official 1-Year Warranty Card</li>
+      </ul>
     </div>
   </section>
 
-  <section class="py-10 sm:py-16 bg-white overflow-hidden">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 mb-6 sm:mb-10">
-      <div class="flex items-center justify-center gap-2 mb-3">
-        <div class="w-1 h-5 bg-gradient-to-b from-indigo-500 to-violet-500 rounded-full"></div>
-        <span class="text-[11px] sm:text-xs font-semibold text-indigo-600 uppercase tracking-[0.15em]">You May Also Like</span>
-        <div class="w-1 h-5 bg-gradient-to-b from-violet-500 to-indigo-500 rounded-full"></div>
-      </div>
-      <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight text-center">Related <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Products</span></h2>
+  <!-- ===== RELATED PRODUCTS ===== -->
+  <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 border-t border-slate-200">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">You Might Also Like</h3>
+      <a href="shop.html" class="text-xs font-bold text-indigo-600 hover:text-indigo-700">
+        View All <i class="fa-solid fa-arrow-right text-[9px]"></i>
+      </a>
     </div>
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16">
-      <div class="flex sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none pb-2 sm:pb-0" style="scroll-padding-left: 1.25rem;">
 
-        <div class="reveal w-full max-w-[260px] sm:max-w-none bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:shadow-indigo-500/15 hover:-translate-y-1 transition-all duration-500 overflow-hidden group border border-slate-100 flex-shrink-0 sm:flex-shrink snap-start">
-          <div class="relative overflow-hidden rounded-xl bg-gradient-to-b from-slate-50 to-white">
-            <span class="absolute top-3 left-3 z-20 px-3 py-1 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-indigo-200">Best</span>
-            <img class="w-full h-[180px] sm:h-[220px] object-contain p-4 sm:p-6 rounded-xl ring-1 ring-slate-100 transition-transform duration-700 ease-out group-hover:scale-105" src="images/Sony WH-1000XM5.png" alt="Sony WH-1000XM5">
-            <div class="absolute left-1/2 -bottom-12 -translate-x-1/2 group-hover:bottom-4 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-              <a href="product-details.html" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md shadow-xl shadow-indigo-500/5 py-2 px-4 rounded-full border border-indigo-100/50 text-sm font-medium text-indigo-600 hover:bg-white transition-all"><i class="fa-solid fa-eye text-xs"></i><span>Quick View</span></a>
-            </div>
-          </div>
-          <div class="p-3 sm:p-4">
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Sony WH-1000XM5</h3>
-            <div class="flex items-center justify-between mt-1.5">
-              <span class="text-[10px] sm:text-xs text-indigo-600 font-semibold uppercase">Headphones</span>
-              <p class="font-bold text-indigo-600 text-sm sm:text-base">৳399</p>
-            </div>
-          </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+
+      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+        <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
+          <img src="images/Sony WH-1000XM5.png" alt="Sony WH-1000XM5" class="w-full h-full object-cover card-img">
         </div>
-
-        <div class="reveal w-full max-w-[260px] sm:max-w-none bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:shadow-indigo-500/15 hover:-translate-y-1 transition-all duration-500 overflow-hidden group border border-slate-100 flex-shrink-0 sm:flex-shrink snap-start">
-          <div class="relative overflow-hidden rounded-xl bg-gradient-to-b from-slate-50 to-white">
-            <img class="w-full h-[180px] sm:h-[220px] object-contain p-4 sm:p-6 rounded-xl ring-1 ring-slate-100 transition-transform duration-700 ease-out group-hover:scale-105" src="images/Amazon Echo (4th Gen).png" alt="Amazon Echo 4th Gen">
-            <div class="absolute left-1/2 -bottom-12 -translate-x-1/2 group-hover:bottom-4 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-              <a href="product-details.html" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md shadow-xl shadow-indigo-500/5 py-2 px-4 rounded-full border border-indigo-100/50 text-sm font-medium text-indigo-600 hover:bg-white transition-all"><i class="fa-solid fa-eye text-xs"></i><span>Quick View</span></a>
-            </div>
-          </div>
-          <div class="p-3 sm:p-4">
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Amazon Echo (4th Gen)</h3>
-            <div class="flex items-center justify-between mt-1.5">
-              <span class="text-[10px] sm:text-xs text-indigo-600 font-semibold uppercase">Smart Home</span>
-              <p class="font-bold text-indigo-600 text-sm sm:text-base">৳99</p>
-            </div>
-          </div>
+        <div class="p-3 flex-1 flex flex-col">
+          <span class="text-[9px] uppercase font-bold text-indigo-600 truncate">Sony • Audio</span>
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">Sony WH-1000XM5</h4>
+          <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳34,900</span>
         </div>
+      </a>
 
-        <div class="reveal w-full max-w-[260px] sm:max-w-none bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:shadow-indigo-500/15 hover:-translate-y-1 transition-all duration-500 overflow-hidden group border border-slate-100 flex-shrink-0 sm:flex-shrink snap-start">
-          <div class="relative overflow-hidden rounded-xl bg-gradient-to-b from-slate-50 to-white">
-            <span class="absolute top-3 left-3 z-20 px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-amber-200">Sale</span>
-            <img class="w-full h-[180px] sm:h-[220px] object-contain p-4 sm:p-6 rounded-xl ring-1 ring-slate-100 transition-transform duration-700 ease-out group-hover:scale-105" src="images/Apple Watch Series 8.png" alt="Apple Watch Series 8">
-            <div class="absolute left-1/2 -bottom-12 -translate-x-1/2 group-hover:bottom-4 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-              <a href="product-details.html" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md shadow-xl shadow-indigo-500/5 py-2 px-4 rounded-full border border-indigo-100/50 text-sm font-medium text-indigo-600 hover:bg-white transition-all"><i class="fa-solid fa-eye text-xs"></i><span>Quick View</span></a>
-            </div>
-          </div>
-          <div class="p-3 sm:p-4">
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Apple Watch Series 8</h3>
-            <div class="flex items-center justify-between mt-1.5">
-              <span class="text-[10px] sm:text-xs text-indigo-600 font-semibold uppercase">Wearables</span>
-              <p class="font-bold text-indigo-600 text-sm sm:text-base">৳349</p>
-            </div>
-          </div>
+      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+        <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
+          <img src="images/Apple Watch Series 8.png" alt="Apple Watch Series 8" class="w-full h-full object-cover card-img">
         </div>
-
-        <div class="reveal w-full max-w-[260px] sm:max-w-none bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:shadow-indigo-500/15 hover:-translate-y-1 transition-all duration-500 overflow-hidden group border border-slate-100 flex-shrink-0 sm:flex-shrink snap-start">
-          <div class="relative overflow-hidden rounded-xl bg-gradient-to-b from-slate-50 to-white">
-            <img class="w-full h-[180px] sm:h-[220px] object-contain p-4 sm:p-6 rounded-xl ring-1 ring-slate-100 transition-transform duration-700 ease-out group-hover:scale-105" src="images/Google-Pixel-7.png" alt="Google Pixel 7">
-            <div class="absolute left-1/2 -bottom-12 -translate-x-1/2 group-hover:bottom-4 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out z-10">
-              <a href="product-details.html" class="flex items-center gap-1.5 bg-white/90 backdrop-blur-md shadow-xl shadow-indigo-500/5 py-2 px-4 rounded-full border border-indigo-100/50 text-sm font-medium text-indigo-600 hover:bg-white transition-all"><i class="fa-solid fa-eye text-xs"></i><span>Quick View</span></a>
-            </div>
-          </div>
-          <div class="p-3 sm:p-4">
-            <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">Google Pixel 7</h3>
-            <div class="flex items-center justify-between mt-1.5">
-              <span class="text-[10px] sm:text-xs text-indigo-600 font-semibold uppercase">Phones</span>
-              <p class="font-bold text-indigo-600 text-sm sm:text-base">৳799</p>
-            </div>
-          </div>
+        <div class="p-3 flex-1 flex flex-col">
+          <span class="text-[9px] uppercase font-bold text-amber-600 truncate">Apple • Watch</span>
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-amber-600 transition-colors">Apple Watch 8</h4>
+          <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳42,500</span>
         </div>
+      </a>
 
-      </div>
+      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-sky-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+        <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
+          <img src="images/Amazon Echo (4th Gen).png" alt="Amazon Echo" class="w-full h-full object-cover card-img">
+        </div>
+        <div class="p-3 flex-1 flex flex-col">
+          <span class="text-[9px] uppercase font-bold text-sky-600 truncate">Amazon • Smart Hub</span>
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-sky-600 transition-colors">Amazon Echo 4th</h4>
+          <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳9,900</span>
+        </div>
+      </a>
+
+      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-violet-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+        <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
+          <img src="images/Google-Pixel-7.png" alt="Google Pixel 7" class="w-full h-full object-cover card-img">
+        </div>
+        <div class="p-3 flex-1 flex flex-col">
+          <span class="text-[9px] uppercase font-bold text-violet-600 truncate">Google • Pixel</span>
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-violet-600 transition-colors">Google Pixel 7</h4>
+          <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳58,900</span>
+        </div>
+      </a>
+
     </div>
   </section>
 
-  <section class="py-10 sm:py-16 bg-gradient-to-b from-slate-50 to-white">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-        <div class="bg-white p-5 sm:p-8 text-center group hover:bg-gradient-to-b hover:from-indigo-50/50 hover:to-white transition-all duration-500 rounded-2xl border border-slate-100 shadow-sm">
-          <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-4 rounded-2xl bg-indigo-50 group-hover:bg-gradient-to-br group-hover:from-indigo-500 group-hover:to-violet-500 flex items-center justify-center transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-indigo-200">
-            <svg class="w-6 h-6 text-indigo-500 group-hover:text-white transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
-          </div>
-          <h4 class="text-sm sm:text-base font-bold text-slate-800 mb-1">Free Shipping</h4>
-          <p class="text-xs sm:text-sm text-slate-400">On orders over ৳50. Fast & reliable delivery worldwide.</p>
-        </div>
-        <div class="bg-white p-5 sm:p-8 text-center group hover:bg-gradient-to-b hover:from-indigo-50/50 hover:to-white transition-all duration-500 rounded-2xl border border-slate-100 shadow-sm">
-          <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-4 rounded-2xl bg-indigo-50 group-hover:bg-gradient-to-br group-hover:from-indigo-500 group-hover:to-violet-500 flex items-center justify-center transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-indigo-200">
-            <svg class="w-6 h-6 text-indigo-500 group-hover:text-white transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
-          </div>
-          <h4 class="text-sm sm:text-base font-bold text-slate-800 mb-1">Secure Checkout</h4>
-          <p class="text-xs sm:text-sm text-slate-400">256-bit SSL encryption. Your data is always protected.</p>
-        </div>
-        <div class="bg-white p-5 sm:p-8 text-center group hover:bg-gradient-to-b hover:from-indigo-50/50 hover:to-white transition-all duration-500 rounded-2xl border border-slate-100 shadow-sm">
-          <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-4 rounded-2xl bg-indigo-50 group-hover:bg-gradient-to-br group-hover:from-indigo-500 group-hover:to-violet-500 flex items-center justify-center transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-indigo-200">
-            <svg class="w-6 h-6 text-indigo-500 group-hover:text-white transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
-          </div>
-          <h4 class="text-sm sm:text-base font-bold text-slate-800 mb-1">30-Day Returns</h4>
-          <p class="text-xs sm:text-sm text-slate-400">Hassle-free returns within 30 days. No questions asked.</p>
-        </div>
-        <div class="bg-white p-5 sm:p-8 text-center group hover:bg-gradient-to-b hover:from-indigo-50/50 hover:to-white transition-all duration-500 rounded-2xl border border-slate-100 shadow-sm">
-          <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-4 rounded-2xl bg-indigo-50 group-hover:bg-gradient-to-br group-hover:from-indigo-500 group-hover:to-violet-500 flex items-center justify-center transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-indigo-200">
-            <svg class="w-6 h-6 text-indigo-500 group-hover:text-white transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/></svg>
-          </div>
-          <h4 class="text-sm sm:text-base font-bold text-slate-800 mb-1">24/7 Support</h4>
-          <p class="text-xs sm:text-sm text-slate-400">Dedicated support team ready to help anytime, anywhere.</p>
-        </div>
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-slate-950 text-slate-400 py-8 border-t border-slate-900 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:flex sm:justify-between sm:items-center">
+      <div class="flex items-center justify-center sm:justify-start gap-2 mb-3 sm:mb-0">
+        <div class="w-6 h-6 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-xs"><i class="fa-solid fa-bag-shopping"></i></div>
+        <span class="font-extrabold text-sm text-white">easy<span class="text-indigo-400">mart</span></span>
       </div>
-    </div>
-  </section>
-
-  <footer class="bg-slate-900 text-slate-300">
-    <div class="h-1 bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-600"></div>
-
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 py-12 sm:py-16">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
-
-        <div class="col-span-2 md:col-span-1">
-          <a href="index.html" class="inline-flex items-center gap-2.5 mb-4">
-            <div class="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 0 1-8 0"/>
-              </svg>
-            </div>
-            <span class="font-bold text-xl text-white tracking-tight">easy<span class="text-indigo-400">mart</span></span>
-          </a>
-          <p class="text-sm text-slate-400 leading-relaxed mb-5 max-w-xs">Your premium destination for curated tech essentials. Shop smarter, live better.</p>
-          <div class="flex items-center gap-3">
-            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-800 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-violet-600 text-slate-400 hover:text-white transition-all duration-300"><i class="fa-brands fa-facebook-f text-xs"></i></a>
-            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-800 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-violet-600 text-slate-400 hover:text-white transition-all duration-300"><i class="fa-brands fa-x-twitter text-xs"></i></a>
-            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-800 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-violet-600 text-slate-400 hover:text-white transition-all duration-300"><i class="fa-brands fa-instagram text-xs"></i></a>
-            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-800 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-violet-600 text-slate-400 hover:text-white transition-all duration-300"><i class="fa-brands fa-youtube text-xs"></i></a>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="text-white text-sm font-bold tracking-wide mb-4">Quick Links</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Home</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Shop All</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">New Arrivals</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Best Sellers</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Sale</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 class="text-white text-sm font-bold tracking-wide mb-4">Customer Service</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Help Center</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Track Order</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Returns & Exchanges</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Shipping Info</a></li>
-            <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Contact Us</a></li>
-          </ul>
-        </div>
-
-        <div class="col-span-2 md:col-span-1">
-          <h4 class="text-white text-sm font-bold tracking-wide mb-4">Stay in the Loop</h4>
-          <p class="text-sm text-slate-400 leading-relaxed mb-4">Get early access to new arrivals, exclusive deals, and 10% off your first order.</p>
-          <form class="flex gap-2" onsubmit="return false">
-            <input type="email" placeholder="Enter your email" class="flex-1 bg-slate-800 text-white text-sm rounded-xl px-4 py-2.5 border border-slate-700 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 transition-colors">
-            <button type="submit" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 flex-shrink-0"><i class="fa-solid fa-arrow-right"></i></button>
-          </form>
-          <div class="mt-6">
-            <p class="text-xs text-slate-500 mb-3 font-medium tracking-wide">We accept</p>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-2.5 py-1.5 bg-slate-800 rounded-lg text-[11px] text-slate-400 font-semibold">BKash</span>
-              <span class="px-2.5 py-1.5 bg-slate-800 rounded-lg text-[11px] text-slate-400 font-semibold">Nagad</span>
-              <span class="px-2.5 py-1.5 bg-slate-800 rounded-lg text-[11px] text-slate-400 font-semibold">Rocket</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="border-t border-slate-800">
-      <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p class="text-xs text-slate-500">© 2026 <span class="text-slate-400">easymart</span>. All rights reserved.</p>
-        <div class="flex items-center gap-4 text-xs text-slate-500">
-          <a href="#" class="hover:text-indigo-400 transition-colors">Privacy Policy</a>
-          <span class="w-1 h-1 rounded-full bg-slate-700"></span>
-          <a href="#" class="hover:text-indigo-400 transition-colors">Terms of Service</a>
-          <span class="w-1 h-1 rounded-full bg-slate-700"></span>
-          <a href="#" class="hover:text-indigo-400 transition-colors">Cookie Policy</a>
-        </div>
-      </div>
+      <p class="text-[11px] text-slate-500">© 2026 EasyMart. Genuine products with full warranty.</p>
     </div>
   </footer>
 
+  <!-- ===== SCRIPTS ===== -->
   <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
+    function triggerToast(title, msg) {
+      const toast = document.getElementById('toast');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-msg');
+      if (!toast) return;
 
-    document.querySelectorAll('.reveal').forEach((el, i) => {
-      el.style.animationDelay = `${i * 0.06}s`;
-      observer.observe(el);
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+      toast.classList.add('show');
+      toast.style.opacity = '1';
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.style.opacity = '0';
+      }, 3000);
+    }
+
+    let cartCount = 2;
+    function addToCart() {
+      cartCount++;
+      const el = document.getElementById('header-cart-count');
+      if (el) el.textContent = cartCount;
+      triggerToast('Cart Updated', 'JBL Flip 6 added to your bag!');
+    }
+
+    function selectColor(color, btn) {
+      document.getElementById('selected-color-name').textContent = color;
+      document.querySelectorAll('.color-btn').forEach(b => {
+        b.classList.remove('ring-indigo-600');
+        b.classList.add('ring-transparent');
+      });
+      if (btn) {
+        btn.classList.remove('ring-transparent');
+        btn.classList.add('ring-indigo-600');
+      }
+    }
+
+    let qty = 1;
+    const qtyVal = document.getElementById('qty-val');
+    document.getElementById('qty-plus')?.addEventListener('click', () => {
+      qty++;
+      if (qtyVal) qtyVal.textContent = qty;
+    });
+    document.getElementById('qty-minus')?.addEventListener('click', () => {
+      if (qty > 1) {
+        qty--;
+        if (qtyVal) qtyVal.textContent = qty;
+      }
     });
 
-    (function() {
-      const mainImage = document.getElementById('mainImage');
-      const zoomLens = document.getElementById('zoomLens');
-      const zoomPanel = document.getElementById('zoomPanel');
-      if (!mainImage || !zoomLens || !zoomPanel) return;
+    const mainImg = document.getElementById('mainImage');
+    const zoomLens = document.getElementById('zoomLens');
+    const thumbBtns = document.querySelectorAll('.thumb-btn');
+    thumbBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        thumbBtns.forEach(b => {
+          b.classList.remove('border-indigo-600', 'border-2');
+          b.classList.add('border-slate-200');
+        });
+        btn.classList.add('border-indigo-600', 'border-2');
+        btn.classList.remove('border-slate-200');
 
-      function updateZoom(e) {
-        const rect = mainImage.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        let x = ((clientX - rect.left) / rect.width) * 100;
-        let y = ((clientY - rect.top) / rect.height) * 100;
-        x = Math.max(0, Math.min(100, x));
-        y = Math.max(0, Math.min(100, y));
-        zoomLens.style.backgroundPosition = `${x}% ${y}%`;
-      }
-
-      function resetZoom() {
-        zoomLens.style.backgroundPosition = 'center';
-        zoomPanel.style.display = 'none';
-      }
-
-      mainImage.addEventListener('mouseenter', () => {
-        zoomPanel.style.display = 'block';
-        requestAnimationFrame(() => zoomPanel.classList.add('active'));
+        const src = btn.dataset.src;
+        if (mainImg) mainImg.src = src;
+        if (zoomLens) zoomLens.style.backgroundImage = `url('${src}')`;
       });
-      mainImage.addEventListener('mousemove', updateZoom);
-      mainImage.addEventListener('mouseleave', () => {
-        zoomPanel.classList.remove('active');
-        setTimeout(() => {
-          zoomLens.style.backgroundPosition = 'center';
-          zoomPanel.style.display = '';
-        }, 200);
-      });
+    });
 
-      mainImage.addEventListener('touchstart', (e) => {
-        zoomPanel.style.display = 'block';
-        requestAnimationFrame(() => zoomPanel.classList.add('active'));
-        updateZoom(e);
-      }, { passive: true });
-      mainImage.addEventListener('touchmove', updateZoom, { passive: true });
-      mainImage.addEventListener('touchend', () => {
+    // 3X Zoom Lens (Desktop only)
+    const zoomPanel = document.getElementById('zoomPanel');
+    if (mainImg && zoomLens && zoomPanel) {
+      mainImg.addEventListener('mouseenter', () => {
+        if (window.innerWidth >= 1024) {
+          zoomPanel.style.display = 'block';
+          requestAnimationFrame(() => zoomPanel.classList.add('active'));
+        }
+      });
+      mainImg.addEventListener('mouseleave', () => {
         zoomPanel.classList.remove('active');
-        setTimeout(() => {
-          zoomLens.style.backgroundPosition = 'center';
-          zoomPanel.style.display = '';
-        }, 200);
-      }, { passive: true });
-    })();
+        setTimeout(() => { zoomPanel.style.display = 'none'; }, 200);
+      });
+      mainImg.addEventListener('mousemove', (e) => {
+        if (window.innerWidth >= 1024) {
+          const rect = mainImg.getBoundingClientRect();
+          const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+          const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+          zoomLens.style.backgroundPosition = `${x}% ${y}%`;
+        }
+      });
+    }
+
+    // Tabs Switcher
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+          b.classList.remove('active', 'text-indigo-600', 'border-indigo-600');
+          b.classList.add('text-slate-400', 'border-transparent');
+        });
+        btn.classList.add('active', 'text-indigo-600', 'border-indigo-600');
+        btn.classList.remove('text-slate-400', 'border-transparent');
+
+        const target = btn.dataset.tab;
+        tabContents.forEach(tc => {
+          if (tc.id === target) tc.classList.remove('hidden');
+          else tc.classList.add('hidden');
+        });
+      });
+    });
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu) menu.classList.toggle('hidden');
+      if (icon) {
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+      }
+    }
+    document.getElementById('menu-btn')?.addEventListener('click', toggleMobileMenu);
   </script>
-
 </body>
 
 </html>

@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order - EasyMart Tech & Audio</title>
+  <meta name="description" content="Track your EasyMart order in real time. Enter your Invoice Number and phone to see courier dispatch, estimated delivery time, and live package status.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z'/><line x1='3' y1='6' x2='21' y2='6'/><path d='M16 10a4 4 0 0 1-8 0'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+              950: '#1e1b4b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    #toast {
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @media screen {
+      #printable-invoice {
+        display: none !important;
+      }
+    }
+
+    @media print {
+      @page {
+        margin: 10mm 12mm;
+        size: A4 portrait;
+      }
+      *, *::before, *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      /* Hide web UI, header, top-bar, lookup form, tracking stepper, courier logs, footer */
+      #top-bar,
+      header,
+      footer,
+      nav,
+      #toast,
+      #lookup-card-section,
+      #tracking-result-section,
+      .no-print {
+        display: none !important;
+      }
+      /* Show ONLY the official company & order invoice */
+      #printable-invoice {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
+
+  <!-- ===== NOTIFICATION TOAST ===== -->
+  <div id="toast" class="fixed bottom-5 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 pointer-events-none opacity-0 translate-y-3">
+    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+      <i class="fa-solid fa-check text-sm" id="toast-icon"></i>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-xs font-bold leading-tight" id="toast-title">Notification</p>
+      <p class="text-[11px] text-slate-300 truncate" id="toast-msg">Action completed successfully.</p>
+    </div>
+  </div>
+
+  <!-- ===== TOP ANNOUNCEMENT BAR ===== -->
+  <div id="top-bar" class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Contact & Warranty -->
+      <div class="hidden md:flex items-center gap-3 text-slate-400 text-xs">
+        <span class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
+          <i class="fa-solid fa-phone text-indigo-400 text-[10px]"></i> +880 1800-000000
+        </span>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <span class="inline-flex items-center gap-1.5 text-slate-300 font-medium">
+          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty Support
+        </span>
+      </div>
+
+      <!-- Center: Status -->
+      <div class="flex-1 flex items-center justify-center text-center px-1 min-w-0">
+        <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs text-slate-200 truncate">
+          <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Live Dispatch
+          </span>
+          <span class="truncate font-medium text-slate-300">Courier Tracking Connected • Steadfast & Pathao</span>
+        </div>
+      </div>
+
+      <!-- Right: Links -->
+      <div class="hidden md:flex items-center gap-3.5 text-slate-400 text-xs">
+        <a href="shop.html" class="hover:text-white transition-colors">Shop Catalog</a>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <a href="index.html#reviews" class="hover:text-white transition-colors">Help Center</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER / NAVBAR ===== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-20">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span class="text-indigo-600">mart</span></span>
+            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech & Audio</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Bar -->
+        <nav class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop All</a>
+          <a href="track-order.html" class="px-4 py-2 text-xs font-bold text-white bg-slate-900 rounded-full shadow-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-truck-fast text-[11px]"></i>
+            <span>Track Order</span>
+          </a>
+          <a href="index.html#flash-deal" class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            Deals
+          </a>
+          <a href="index.html#reviews" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Reviews</a>
+        </nav>
+
+        <!-- Right Side Icons & Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a href="shop.html" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Store</span>
+          </a>
+
+          <!-- Mobile Menu Button -->
+          <button id="menu-btn" onclick="toggleMobileMenu()" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors" aria-label="Toggle Navigation Menu">
+            <i class="fa-solid fa-bars text-sm" id="menu-icon"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2 shadow-lg">
+      <a href="index.html" class="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg">Home</a>
+      <a href="shop.html" class="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg">Shop All Products</a>
+      <a href="track-order.html" class="block px-3 py-2 text-xs font-bold text-white bg-slate-900 rounded-lg">
+        <i class="fa-solid fa-truck-fast mr-2"></i>Track Order
+      </a>
+      <a href="index.html#flash-deal" class="block px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg">⚡ Special Deals</a>
+      <a href="index.html#reviews" class="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg">Customer Reviews</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT CONTAINER ===== -->
+  <main class="flex-1">
+
+    <!-- ===== HERO & LOOKUP SECTION ===== -->
+    <section id="lookup-card-section" class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white pt-5 sm:pt-8 pb-8 sm:pb-10 relative overflow-hidden">
+      <!-- Background subtle glow & grid -->
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+      <div class="absolute top-0 right-1/4 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-10 left-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <!-- Live Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-emerald-300 border border-emerald-500/30 backdrop-blur-md mb-2.5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Live Order Tracking</span>
+        </div>
+
+        <h1 class="text-xl sm:text-3xl font-black text-white tracking-tight leading-tight">
+          Track Your Delivery
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-lg mx-auto leading-relaxed">
+          Enter your Invoice / Order Number and the Billing Phone Number provided during checkout to see real-time courier dispatch status.
+        </p>
+
+        <!-- Lookup Form Box -->
+        <div class="mt-5 bg-white text-slate-800 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/90 max-w-xl mx-auto text-left">
+          <form id="tracking-form" onsubmit="handleTrackSubmit(event)" class="space-y-3.5">
+            
+            <!-- Invoice Number Input -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="invoice_no" class="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  Invoice / Order Number <span class="text-rose-500">*</span>
+                </label>
+                <span class="text-[10px] text-slate-600 font-medium">From SMS or Email</span>
+              </div>
+              <div class="relative">
+                <i class="fa-solid fa-hashtag absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text"
+                       id="invoice_no"
+                       name="invoice_no"
+                       required
+                       placeholder="e.g. ORD-20261108-7X89Q"
+                       class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs sm:text-sm font-bold font-mono text-slate-900 rounded-xl border border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 outline-none uppercase transition-all">
+              </div>
+            </div>
+
+            <!-- Phone Number Input -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="phone" class="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  Billing / Shipping Phone <span class="text-rose-500">*</span>
+                </label>
+                <span class="text-[10px] text-slate-600 font-medium">11-digit mobile number</span>
+              </div>
+              <div class="relative">
+                <i class="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="tel"
+                       id="phone"
+                       name="phone"
+                       required
+                       placeholder="e.g. 01700000000"
+                       class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs sm:text-sm font-semibold text-slate-900 rounded-xl border border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 outline-none transition-all">
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                    id="track-btn"
+                    class="w-full py-3 px-6 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-slate-900 hover:bg-slate-800 active:scale-[0.99] shadow-lg shadow-slate-950/20 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              <span>Track Order Status</span>
+            </button>
+          </form>
+
+          <!-- Quick Test Demo Buttons -->
+          <div class="mt-4 pt-3.5 border-t border-slate-100">
+            <p class="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <i class="fa-solid fa-bolt text-amber-500 text-xs"></i>
+              <span>Try Demo Orders:</span>
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button"
+                      onclick="loadDemoOrder('ORD-20261108-7X89Q', '01700000000')"
+                      class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                <span>Demo 1 (In Transit)</span>
+              </button>
+              <button type="button"
+                      onclick="loadDemoOrder('ORD-20261115-3M12D', '01812345678')"
+                      class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>Demo 2 (Delivered)</span>
+              </button>
+              <button type="button"
+                      onclick="loadDemoOrder('ORD-20261122-8K90P', '01911223344')"
+                      class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                <span>Demo 3 (Processing)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== TRACKING RESULT SECTION ===== -->
+    <section id="tracking-result-section" class="pt-6 sm:pt-8 pb-12 sm:pb-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Result Container: Rendered via JavaScript -->
+        <div id="result-display-area">
+          <!-- Default State: Prompt to search -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-8 sm:p-12 text-center max-w-2xl mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-4 border border-indigo-100">
+              <i class="fa-solid fa-route"></i>
+            </div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900">Ready to Track Your Order</h3>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-md mx-auto leading-relaxed">
+              Enter your invoice and phone number above, or click one of the quick demo buttons to see how the live tracking stepper and courier timeline work.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== DEDICATED CLEAN PRINTABLE INVOICE (SHOWN ONLY ON PRINT / PDF) ===== -->
+  <div id="printable-invoice" aria-hidden="true"></div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-900">
+
+        <!-- Col 1: Store Intro -->
+        <div class="sm:col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-sm">
+              <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <span class="font-extrabold text-xl text-white">easy<span class="text-indigo-400">mart</span></span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bangladesh’s premier tech store for genuine smartphones, flagship ANC audio, and wearables with verified official warranty.
+          </p>
+          <div class="flex items-center gap-2.5">
+            <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Col 2: Navigation -->
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Shop Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="shop.html" class="hover:text-white transition-colors">Flagship Audio</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartphones</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartwatches</a></li>
+            <li><a href="index.html#flash-deal" class="text-amber-400 font-semibold">Special Offers</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Support -->
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Customer Support</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="track-order.html" class="text-white font-bold transition-colors">Order Tracking</a></li>
+            <li><a href="index.html#reviews" class="hover:text-white transition-colors">Warranty & Claim</a></li>
+            <li><a href="index.html#reviews" class="hover:text-white transition-colors">Return Policy</a></li>
+            <li><a href="https://wa.me/8801800000000" target="_blank" class="hover:text-white transition-colors">WhatsApp Support</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Payments -->
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Accepted Payments</h4>
+          <p class="text-xs text-slate-500 mb-2.5">100% secure checkout & verified gateway</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">Cash on Delivery</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <p>© 2026 EasyMart. All rights reserved.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== MOBILE BOTTOM NAVIGATION BAR ===== -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 px-4 py-2 flex items-center justify-around shadow-2xl">
+    <a href="index.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
+      <i class="fa-solid fa-house text-base"></i>
+      <span class="text-[10px] font-bold">Home</span>
+    </a>
+    <a href="shop.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
+      <i class="fa-solid fa-store text-base"></i>
+      <span class="text-[10px] font-bold">Shop</span>
+    </a>
+    <a href="track-order.html" class="flex flex-col items-center gap-0.5 text-slate-900 font-bold transition-colors">
+      <i class="fa-solid fa-truck-fast text-base"></i>
+      <span class="text-[10px] font-bold">Tracking</span>
+    </a>
+    <a href="index.html#reviews" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
+      <i class="fa-solid fa-headset text-base"></i>
+      <span class="text-[10px] font-bold">Help</span>
+    </a>
+  </nav>
+
+  <!-- =================================================================
+       ORDER TRACKING CLIENT-SIDE ENGINE
+       ================================================================= -->
+  <script>
+    // Mock database mirroring the binary MLM database schema & EasyMart catalog
+    const mockOrdersDatabase = [
+      {
+        invoice_no: "ORD-20261108-7X89Q",
+        phone: "01700000000",
+        customer_name: "Tanvir Ahmed",
+        customer_type: "Verified VIP Member",
+        created_at: "Nov 23, 2026 • 10:35 AM",
+        order_status: "in_transit", // pending | processing | in_transit | delivered | cancelled
+        payment_status: "paid", // paid | unpaid | partial
+        payment_method: "bKash Online Payment",
+        transaction_id: "BK992817342",
+        shipping_address: "House 42, Road 11, Block D",
+        full_location: "Banani, Dhaka - 1213",
+        courier_partner: "Steadfast Express",
+        courier_tracking_id: "ST-8890214",
+        estimated_delivery: "Today by 6:00 PM",
+        items: [
+          {
+            id: 1,
+            name: "Sony WH-1000XM5 ANC Studio Headphones",
+            variant: "Black Edition / Official Warranty",
+            image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=400&q=80",
+            quantity: 1,
+            price: 34900
+          }
+        ],
+        subtotal: 34900,
+        shipping_fee: 0,
+        discount: 0,
+        total_amount: 34900,
+        timeline: [
+          {
+            title: "Out for Delivery",
+            desc: "Courier rider (Kamrul Islam, 01712-345678) has picked up the parcel for delivery.",
+            time: "Today, 09:15 AM",
+            status: "active"
+          },
+          {
+            title: "Arrived at Local Hub (Banani)",
+            desc: "Shipment reached Dhaka North dispatch sorting facility.",
+            time: "Nov 23, 2026 • 07:30 AM",
+            status: "done"
+          },
+          {
+            title: "Dispatched from EasyMart Central Warehouse",
+            desc: "Packed with multi-layer bubble wrap and handed to Steadfast Express.",
+            time: "Nov 22, 2026 • 05:40 PM",
+            status: "done"
+          },
+          {
+            title: "Quality Check & Verification Completed",
+            desc: "Official authentic seal verified and IMEI/Serial registered.",
+            time: "Nov 22, 2026 • 01:10 PM",
+            status: "done"
+          },
+          {
+            title: "Order Placed & Confirmed",
+            desc: "Payment verified via bKash gateway. Order assigned to fulfillment team.",
+            time: "Nov 22, 2026 • 10:35 AM",
+            status: "done"
+          }
+        ]
+      },
+      {
+        invoice_no: "ORD-20261115-3M12D",
+        phone: "01812345678",
+        customer_name: "Sadia Jahan",
+        customer_type: "Platinum Customer",
+        created_at: "Nov 20, 2026 • 03:15 PM",
+        order_status: "delivered",
+        payment_status: "paid",
+        payment_method: "Cash on Delivery",
+        transaction_id: "COD-CASH-RECVD",
+        shipping_address: "Sector 4, Road 7, Flat 3B",
+        full_location: "Uttara, Dhaka - 1230",
+        courier_partner: "Pathao Express",
+        courier_tracking_id: "PTH-6638102",
+        estimated_delivery: "Delivered on Nov 21, 2026",
+        items: [
+          {
+            id: 2,
+            name: "Apple Watch Ultra 2 Titanium Case",
+            variant: "49mm Trail Loop (Orange/Beige)",
+            image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80",
+            quantity: 1,
+            price: 94500
+          }
+        ],
+        subtotal: 94500,
+        shipping_fee: 0,
+        discount: 2000,
+        total_amount: 92500,
+        timeline: [
+          {
+            title: "Delivered to Customer",
+            desc: "Package signed and received by customer. Cash collected successfully.",
+            time: "Nov 21, 2026 • 02:40 PM",
+            status: "done"
+          },
+          {
+            title: "Out for Delivery",
+            desc: "Rider out for Uttara delivery zone.",
+            time: "Nov 21, 2026 • 11:20 AM",
+            status: "done"
+          },
+          {
+            title: "Order Processed & Dispatched",
+            desc: "Dispatched from central logistics center.",
+            time: "Nov 20, 2026 • 04:30 PM",
+            status: "done"
+          }
+        ]
+      },
+      {
+        invoice_no: "ORD-20261122-8K90P",
+        phone: "01911223344",
+        customer_name: "Rafiqul Hassan",
+        customer_type: "Regular Buyer",
+        created_at: "Nov 24, 2026 • 01:10 AM",
+        order_status: "processing",
+        payment_status: "paid",
+        payment_method: "Nagad Gateway",
+        transaction_id: "NG77192841",
+        shipping_address: "Holding 18, CDA Avenue, Nasirabad",
+        full_location: "GEC Circle, Chittagong",
+        courier_partner: "RedX Logistics",
+        courier_tracking_id: "Assigning...",
+        estimated_delivery: "Nov 26, 2026",
+        items: [
+          {
+            id: 3,
+            name: "Samsung Galaxy S24 Ultra (512GB)",
+            variant: "Titanium Gray / 12GB RAM",
+            image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=400&q=80",
+            quantity: 1,
+            price: 138000
+          }
+        ],
+        subtotal: 138000,
+        shipping_fee: 150,
+        discount: 3000,
+        total_amount: 135150,
+        timeline: [
+          {
+            title: "Processing at Fulfillment Center",
+            desc: "Items being prepared, serialized, and scheduled for courier pickup.",
+            time: "Nov 24, 2026 • 02:00 AM",
+            status: "active"
+          },
+          {
+            title: "Order Placed & Paid",
+            desc: "Payment verified successfully via Nagad.",
+            time: "Nov 24, 2026 • 01:10 AM",
+            status: "done"
+          }
+        ]
+      }
+    ];
+
+    // Helper: Toast Trigger
+    function triggerToast(title, msg) {
+      const toast = document.getElementById('toast');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-msg');
+      if (!toast) return;
+
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+      toast.classList.add('show');
+      toast.style.opacity = '1';
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.style.opacity = '0';
+      }, 3500);
+    }
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu) menu.classList.toggle('hidden');
+      if (icon) {
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+      }
+    }
+
+    // Auto-fill demo order
+    function loadDemoOrder(inv, ph) {
+      document.getElementById('invoice_no').value = inv;
+      document.getElementById('phone').value = ph;
+      executeTracking(inv, ph, true);
+    }
+
+    // Handle Form Submit
+    function handleTrackSubmit(e) {
+      e.preventDefault();
+      const invoice = document.getElementById('invoice_no').value.trim().toUpperCase();
+      const phone = document.getElementById('phone').value.trim();
+      executeTracking(invoice, phone, true);
+    }
+
+    // Core Tracking Execution Function
+    function executeTracking(invoiceInput, phoneInput, shouldScroll = false) {
+      const resultArea = document.getElementById('result-display-area');
+      const btn = document.getElementById('track-btn');
+      
+      // Temporary loading indicator
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Searching Order...</span>`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerHTML = `<i class="fa-solid fa-magnifying-glass text-xs"></i> <span>Track Order Status</span>`;
+        btn.disabled = false;
+
+        // Clean input for matching
+        const cleanInv = invoiceInput.replace(/\s+/g, '').toUpperCase();
+        const cleanPhone = phoneInput.replace(/[^0-9]/g, '');
+
+        const foundOrder = mockOrdersDatabase.find(o => {
+          const oInv = o.invoice_no.replace(/\s+/g, '').toUpperCase();
+          const oPhone = o.phone.replace(/[^0-9]/g, '');
+          return oInv === cleanInv && oPhone === cleanPhone;
+        });
+
+        if (foundOrder) {
+          renderOrderCard(foundOrder);
+          if (shouldScroll) {
+            document.getElementById('tracking-result-section')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else {
+          renderNotFound(invoiceInput, phoneInput);
+          if (shouldScroll) {
+            document.getElementById('tracking-result-section')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }, 350);
+    }
+
+    // Render Order Found Card
+    function renderOrderCard(order) {
+      const resultArea = document.getElementById('result-display-area');
+
+      // Stepper Stage Calculation
+      // 1: Confirmed/Pending, 2: Processing, 3: In Transit, 4: Delivered
+      const stages = [
+        { key: 'pending', label: 'Order Confirmed', icon: 'fa-file-circle-check' },
+        { key: 'processing', label: 'Processing & QC', icon: 'fa-boxes-packing' },
+        { key: 'in_transit', label: 'In Transit', icon: 'fa-truck-fast' },
+        { key: 'delivered', label: 'Delivered', icon: 'fa-house-circle-check' }
+      ];
+
+      const stageOrder = ['pending', 'processing', 'in_transit', 'delivered'];
+      const currentIdx = stageOrder.indexOf(order.order_status);
+
+      // Status Badges
+      let orderBadge = '';
+      if (order.order_status === 'delivered') {
+        orderBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"><i class="fa-solid fa-circle-check"></i> Delivered</span>`;
+      } else if (order.order_status === 'in_transit') {
+        orderBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200"><span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span> In Transit</span>`;
+      } else if (order.order_status === 'processing') {
+        orderBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200"><i class="fa-solid fa-rotate"></i> Processing</span>`;
+      } else {
+        orderBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">Pending</span>`;
+      }
+
+      let paymentBadge = '';
+      if (order.payment_status === 'paid') {
+        paymentBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100/70 text-emerald-800 border border-emerald-300/60"><i class="fa-solid fa-shield-check text-[10px]"></i> Paid</span>`;
+      } else {
+        paymentBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100/70 text-amber-800 border border-amber-300/60"><i class="fa-solid fa-clock text-[10px]"></i> Cash on Delivery</span>`;
+      }
+
+      // Items HTML
+      let itemsHtml = order.items.map(item => `
+        <div class="flex items-center gap-3.5 py-3 border-b border-slate-100 last:border-b-0">
+          <img src="${item.image}" alt="${item.name}" class="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-xl border border-slate-200 flex-shrink-0 bg-slate-100">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs sm:text-sm font-bold text-slate-900 truncate">${item.name}</h4>
+            <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5">${item.variant}</p>
+            <div class="flex items-center gap-3 mt-1 text-[11px] text-slate-600">
+              <span class="font-medium">Qty: <strong class="text-slate-800 font-bold">${item.quantity}</strong></span>
+              <span>•</span>
+              <span class="font-bold text-slate-900">৳${item.price.toLocaleString()} each</span>
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <span class="text-xs sm:text-sm font-black text-slate-900">৳${(item.price * item.quantity).toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Timeline HTML
+      let timelineHtml = order.timeline.map((log, i) => {
+        const isCurrent = log.status === 'active';
+        return `
+          <div class="relative pl-6 pb-5 last:pb-0">
+            <!-- Timeline Line -->
+            <div class="absolute left-2.5 top-3 -bottom-1 w-0.5 ${i === order.timeline.length - 1 ? 'hidden' : 'bg-slate-200'}"></div>
+            <!-- Timeline Node Indicator -->
+            <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full flex items-center justify-center ${isCurrent ? 'bg-indigo-600 ring-4 ring-indigo-100 text-white' : 'bg-emerald-500 text-white'} text-[9px] shadow-sm">
+              <i class="fa-solid ${isCurrent ? 'fa-spinner fa-spin' : 'fa-check'}"></i>
+            </div>
+            <div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                <span class="text-xs font-bold ${isCurrent ? 'text-indigo-950 font-black' : 'text-slate-900'}">${log.title}</span>
+                <span class="text-[11px] text-slate-500 font-medium">${log.time}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">${log.desc}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Complete Card
+      resultArea.innerHTML = `
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden print-shadow-none">
+          
+          <!-- Card Header Bar -->
+          <div class="p-6 sm:p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300">Order Tracking Details</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                <span class="text-[11px] text-slate-300">${order.created_at}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <h2 class="text-xl sm:text-2xl font-black font-mono tracking-tight text-white">${order.invoice_no}</h2>
+                <button type="button" onclick="navigator.clipboard.writeText('${order.invoice_no}'); triggerToast('Copied', 'Invoice number copied!');" class="text-slate-400 hover:text-white transition-colors text-xs" title="Copy Invoice Number">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+              <p class="text-xs text-slate-300 mt-1">
+                Customer: <strong class="text-white">${order.customer_name}</strong> • <span class="text-amber-400 font-semibold">${order.customer_type}</span>
+              </p>
+            </div>
+
+            <!-- Badges -->
+            <div class="flex flex-wrap items-center gap-2">
+              ${orderBadge}
+              ${paymentBadge}
+            </div>
+          </div>
+
+          <!-- Stepper Progress Bar -->
+          <div class="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative">
+              ${stages.map((st, idx) => {
+                const isPassed = currentIdx >= idx;
+                const isCurrent = currentIdx === idx;
+                return `
+                  <div class="flex flex-col items-center text-center relative z-10">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-bold transition-all shadow-sm mb-2.5 ${
+                      isCurrent 
+                        ? 'bg-slate-900 text-white ring-4 ring-indigo-200 scale-105' 
+                        : (isPassed ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-400')
+                    }">
+                      <i class="fa-solid ${isPassed && !isCurrent ? 'fa-check' : st.icon} text-sm"></i>
+                    </div>
+                    <span class="text-xs font-bold ${isCurrent ? 'text-slate-950 font-black' : (isPassed ? 'text-slate-800' : 'text-slate-400')}">
+                      ${st.label}
+                    </span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">
+                      ${isCurrent ? 'Active Stage' : (isPassed ? 'Completed' : 'Upcoming')}
+                    </span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Two Column Body: Left Delivery Info, Right Activity Timeline -->
+          <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Shipping & Summary (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+              
+              <!-- Delivery & Courier Card -->
+              <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/80">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
+                  <i class="fa-solid fa-location-dot text-indigo-600"></i>
+                  <span>Delivery Destination & Courier</span>
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span class="text-slate-600 block text-[11px]">Shipping Address</span>
+                    <span class="font-bold text-slate-900 block mt-0.5 leading-snug">${order.shipping_address}</span>
+                    <span class="text-slate-500 text-[11px] block">${order.full_location}</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-600 block text-[11px]">Contact Mobile</span>
+                    <span class="font-bold text-slate-900 block mt-0.5">${order.phone}</span>
+                    <span class="text-emerald-600 text-[11px] font-semibold flex items-center gap-1 mt-0.5">
+                      <i class="fa-solid fa-shield-check"></i> OTP Verification Enabled
+                    </span>
+                  </div>
+                  <div class="pt-2 sm:border-t border-slate-200/60">
+                    <span class="text-slate-600 block text-[11px]">Assigned Courier Partner</span>
+                    <span class="font-bold text-slate-900 block mt-0.5">${order.courier_partner}</span>
+                    <span class="text-slate-500 text-[11px] font-mono">ID: ${order.courier_tracking_id}</span>
+                  </div>
+                  <div class="pt-2 sm:border-t border-slate-200/60">
+                    <span class="text-slate-600 block text-[11px]">Estimated Delivery</span>
+                    <span class="font-bold text-indigo-600 block mt-0.5">${order.estimated_delivery}</span>
+                    <span class="text-slate-500 text-[11px]">Fast Express Shipping</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ordered Items List -->
+              <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center gap-2">
+                  <i class="fa-solid fa-box-open text-indigo-600"></i>
+                  <span>Package Items (${order.items.length})</span>
+                </h3>
+                <div class="border border-slate-200 rounded-2xl p-4 bg-white shadow-xs">
+                  ${itemsHtml}
+                </div>
+              </div>
+
+              <!-- Price Breakdown -->
+              <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-2 text-xs">
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>Subtotal Amount:</span>
+                  <span class="font-bold text-slate-900">৳${order.subtotal.toLocaleString()}</span>
+                </div>
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>Express Shipping:</span>
+                  <span class="font-bold text-emerald-600">${order.shipping_fee === 0 ? 'FREE' : '৳' + order.shipping_fee}</span>
+                </div>
+                ${order.discount > 0 ? `
+                  <div class="flex items-center justify-between text-rose-600">
+                    <span>Discount Voucher:</span>
+                    <span class="font-bold">-৳${order.discount.toLocaleString()}</span>
+                  </div>
+                ` : ''}
+                <div class="flex items-center justify-between text-slate-600 pt-2 border-t border-slate-100">
+                  <span>Payment Gateway:</span>
+                  <span class="font-semibold text-slate-800">${order.payment_method}</span>
+                </div>
+                <div class="flex items-center justify-between text-slate-900 pt-2 border-t border-slate-200 font-extrabold text-sm sm:text-base">
+                  <span>Total Payable:</span>
+                  <span class="text-indigo-600 font-black">৳${order.total_amount.toLocaleString()}</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Live Courier Activity Log (5 cols) -->
+            <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+              
+              <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
+                  <i class="fa-solid fa-timeline text-indigo-600"></i>
+                  <span>Live Activity Log</span>
+                </h3>
+                <div class="bg-slate-50/70 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+                  ${timelineHtml}
+                </div>
+              </div>
+
+              <!-- Quick Action Buttons -->
+              <div class="space-y-2.5 pt-2 no-print">
+                <button type="button" onclick="window.print()" class="w-full py-3 px-4 rounded-xl text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-print"></i>
+                  <span>Print / Save Order Receipt</span>
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                  <a href="https://wa.me/8801800000000?text=Hello%20EasyMart,%20I%20want%20to%20inquire%20about%20my%20Order%20${order.invoice_no}" target="_blank" class="py-2.5 px-3 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors flex items-center justify-center gap-1.5">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>WhatsApp</span>
+                  </a>
+                  <a href="shop.html" class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span>Shop More</span>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+      // Render clean, company-and-order-only printable invoice
+      renderPrintableInvoice(order);
+    }
+
+    // Render Clean Company & Order Retail Invoice (Print View Only)
+    function renderPrintableInvoice(order) {
+      const printContainer = document.getElementById('printable-invoice');
+      if (!printContainer) return;
+
+      const itemsRows = order.items.map((item, idx) => `
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 10px 8px; text-align: center; color: #64748b; font-size: 11px;">${idx + 1}</td>
+          <td style="padding: 10px 12px;">
+            <div style="font-weight: 700; color: #0f172a; font-size: 12px;">${item.name}</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${item.variant}</div>
+          </td>
+          <td style="padding: 10px 12px; text-align: right; font-weight: 600; color: #334155; font-size: 12px;">৳${item.price.toLocaleString()}</td>
+          <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; font-size: 12px;">${item.quantity}</td>
+          <td style="padding: 10px 12px; text-align: right; font-weight: 700; color: #0f172a; font-size: 12px;">৳${(item.price * item.quantity).toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      printContainer.innerHTML = `
+        <div style="max-width: 800px; margin: 0 auto; font-family: 'Inter', system-ui, -apple-system, sans-serif; color: #0f172a; padding: 10px 0;">
+          
+          <!-- Company Header & Invoice Title -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 18px; border-bottom: 2px solid #0f172a;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <div style="width: 32px; height: 32px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 900; font-size: 16px;">
+                  🛍️
+                </div>
+                <div>
+                  <span style="font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px;">easy<span style="color: #4f46e5;">mart</span></span>
+                  <span style="display: block; font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Tech & Audio Limited</span>
+                </div>
+              </div>
+              <div style="font-size: 11px; color: #475569; line-height: 1.5;">
+                Level 4, Plot 18, Road 11, Banani Commercial Area<br>
+                Dhaka-1213, Bangladesh<br>
+                Helpline: +880 1800-000000 | Email: billing@easymart.com.bd<br>
+                Official Website: www.easymart.com.bd
+              </div>
+            </div>
+
+            <div style="text-align: right;">
+              <div style="display: inline-block; padding: 4px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0f172a; margin-bottom: 6px;">
+                RETAIL INVOICE / CASH MEMO
+              </div>
+              <div style="font-size: 16px; font-weight: 900; font-family: monospace; color: #0f172a;">
+                ${order.invoice_no}
+              </div>
+              <div style="font-size: 11px; color: #475569; margin-top: 4px;">
+                <strong>Order Date:</strong> ${order.created_at}
+              </div>
+              <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+                <strong>Payment Status:</strong> <span style="font-weight: 800; color: ${order.payment_status === 'paid' ? '#059669' : '#d97706'}; text-transform: uppercase;">${order.payment_status === 'paid' ? 'PAID' : 'CASH ON DELIVERY'}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer & Order Meta Information (2 Columns) -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid #e2e8f0; font-size: 11px;">
+            <div>
+              <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 5px; letter-spacing: 0.5px;">CUSTOMER / BILLED TO:</div>
+              <div style="font-size: 13px; font-weight: 800; color: #0f172a;">${order.customer_name}</div>
+              <div style="color: #475569; margin-top: 2px;">Membership: <strong>${order.customer_type}</strong></div>
+              <div style="color: #475569; margin-top: 2px;">Contact Phone: <strong>${order.phone}</strong></div>
+            </div>
+
+            <div>
+              <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 5px; letter-spacing: 0.5px;">DELIVERY & PAYMENT DETAILS:</div>
+              <div style="font-weight: 700; color: #0f172a;">${order.shipping_address}</div>
+              <div style="color: #475569; margin-top: 2px;">${order.full_location}</div>
+              <div style="color: #475569; margin-top: 3px;">Payment Method: <strong>${order.payment_method}</strong></div>
+              ${order.transaction_id ? `<div style="color: #64748b; font-family: monospace; font-size: 10px; margin-top: 1px;">Transaction ID: ${order.transaction_id}</div>` : ''}
+            </div>
+          </div>
+
+          <!-- Product Items Table -->
+          <div style="margin: 18px 0;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+              <thead>
+                <tr style="background: #0f172a; color: #ffffff;">
+                  <th style="padding: 9px 8px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: center; width: 40px;">#</th>
+                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800;">Item Description & Specifications</th>
+                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: right; width: 110px;">Unit Price</th>
+                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: center; width: 50px;">Qty</th>
+                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: right; width: 120px;">Total (BDT)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsRows}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Calculation Summary -->
+          <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+            <div style="width: 270px; font-size: 11px; line-height: 1.8;">
+              <div style="display: flex; justify-content: space-between; color: #475569;">
+                <span>Subtotal:</span>
+                <span style="font-weight: 700; color: #0f172a;">৳${order.subtotal.toLocaleString()}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: #475569;">
+                <span>Delivery Charge:</span>
+                <span style="font-weight: 700; color: #059669;">${order.shipping_fee === 0 ? 'FREE' : '৳' + order.shipping_fee}</span>
+              </div>
+              ${order.discount > 0 ? `
+                <div style="display: flex; justify-content: space-between; color: #dc2626;">
+                  <span>Voucher Discount:</span>
+                  <span style="font-weight: 700;">-৳${order.discount.toLocaleString()}</span>
+                </div>
+              ` : ''}
+              <div style="display: flex; justify-content: space-between; border-top: 2px solid #0f172a; margin-top: 6px; padding-top: 6px; font-size: 14px; font-weight: 900; color: #0f172a;">
+                <span>Total Amount:</span>
+                <span>৳${order.total_amount.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms, Warranty & Signature -->
+          <div style="margin-top: 32px; padding-top: 16px; border-top: 1px dashed #cbd5e1; display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; font-size: 10px;">
+            <div>
+              <div style="font-weight: 800; text-transform: uppercase; color: #0f172a; margin-bottom: 4px;">Terms of Sale & Warranty:</div>
+              <ol style="margin: 0; padding-left: 14px; color: #64748b; line-height: 1.6;">
+                <li>100% genuine products with official manufacturer / EasyMart warranty coverage.</li>
+                <li>7-day replacement warranty applies for any physical hardware manufacturing defects.</li>
+                <li>Please preserve this invoice and the intact original product box for all warranty claims.</li>
+              </ol>
+            </div>
+
+            <div style="display: flex; flex-direction: column; justify-content: flex-end; text-align: center;">
+              <div>
+                <div style="border-top: 1px solid #94a3b8; width: 170px; margin: 0 auto; padding-top: 4px; font-weight: 700; font-size: 10px; color: #334155;">
+                  Authorized Signature & Seal<br>
+                  <span style="font-weight: 500; font-size: 9px; color: #64748b;">EasyMart Tech & Audio Ltd.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Footer Note -->
+          <div style="text-align: center; margin-top: 22px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 9px; color: #94a3b8;">
+            Thank you for shopping with EasyMart! • This is an electronically generated retail invoice. • Helpline: 1800-000000
+          </div>
+
+        </div>
+      `;
+    }
+
+    // Render Order Not Found Warning State
+    function renderNotFound(invoice, phone) {
+      const printContainer = document.getElementById('printable-invoice');
+      if (printContainer) printContainer.innerHTML = '';
+
+      const resultArea = document.getElementById('result-display-area');
+      resultArea.innerHTML = `
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-xl mx-auto">
+          <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto text-2xl mb-4 border border-rose-100">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <span class="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 mb-2">
+            No Records Found
+          </span>
+          <h3 class="text-lg sm:text-xl font-black text-slate-900">Order Not Found</h3>
+          <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
+            We could not find an order matching invoice <strong class="text-slate-800 font-mono">${invoice || 'N/A'}</strong> with phone <strong class="text-slate-800">${phone || 'N/A'}</strong>.
+          </p>
+
+          <div class="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-left text-xs space-y-2 text-slate-600">
+            <p class="font-bold text-slate-800">Please check the following tips:</p>
+            <ul class="list-disc pl-4 space-y-1 text-slate-500">
+              <li>Ensure there are no typos in the invoice number (format: <code class="text-indigo-600 font-bold">ORD-YYYYMMDD-XXXXX</code>).</li>
+              <li>Provide the exact 11-digit phone number entered during checkout.</li>
+              <li>If you placed the order just now, allow 5-10 minutes for courier sync.</li>
+            </ul>
+          </div>
+
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button type="button" onclick="loadDemoOrder('ORD-20261108-7X89Q', '01700000000')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-2">
+              <i class="fa-solid fa-bolt text-amber-400"></i>
+              <span>Try Working Demo Order</span>
+            </button>
+            <a href="https://wa.me/8801800000000" target="_blank" class="px-5 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors flex items-center gap-2">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>Contact Support</span>
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    // Auto-check URL Query Parameters on page load (e.g. ?invoice=...&phone=...)
+    window.addEventListener('DOMContentLoaded', () => {
+      // Ensure viewport starts firmly at top without jumping
+      window.scrollTo(0, 0);
+
+      const params = new URLSearchParams(window.location.search);
+      const urlInvoice = params.get('invoice') || params.get('invoice_no');
+      const urlPhone = params.get('phone');
+
+      if (urlInvoice && urlPhone) {
+        document.getElementById('invoice_no').value = urlInvoice;
+        document.getElementById('phone').value = urlPhone;
+        executeTracking(urlInvoice, urlPhone, false);
+      } else {
+        // Pre-fill Demo Order 1 and render quietly at bottom without scrolling down
+        document.getElementById('invoice_no').value = 'ORD-20261108-7X89Q';
+        document.getElementById('phone').value = '01700000000';
+        executeTracking('ORD-20261108-7X89Q', '01700000000', false);
+      }
+    });
+  </script>
+</body>
+
+</html>
