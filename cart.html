@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Your Shopping Cart — EasyMart Tech & Audio</title>
+  <meta name="description"
+    content="Review your shopping bag, apply discount promo coupons, and proceed to secure checkout on EasyMart.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z'/><line x1='3' y1='6' x2='21' y2='6'/><path d='M16 10a4 4 0 0 1-8 0'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          screens: {
+            'xs': '375px',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fafbfc;
+      color: #0f172a;
+    }
+
+    #toast {
+      transform: translateY(-20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(200%);
+      }
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased overflow-x-hidden">
+
+  <!-- ===== FLOATING TOAST NOTIFICATION ===== -->
+  <div id="toast"
+    class="fixed top-5 right-4 sm:right-6 z-50 flex items-center gap-3 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-md max-w-sm">
+    <div
+      class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center flex-shrink-0 text-white text-xs">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="flex flex-col text-xs pr-2">
+      <span id="toast-title" class="font-bold text-white leading-tight">Notification</span>
+      <span id="toast-msg" class="text-slate-300 text-[11px] mt-0.5 leading-snug">Action completed successfully.</span>
+    </div>
+  </div>
+
+  <!-- ===== TOP ANNOUNCEMENT BAR (PREMIUM SLEEK) ===== -->
+  <div id="top-bar"
+    class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50 overflow-hidden">
+    <!-- Dotted Matrix Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Contact & Guarantee -->
+      <div class="hidden md:flex items-center gap-3 text-slate-400 text-xs">
+        <span class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
+          <i class="fa-solid fa-phone text-indigo-400 text-[10px]"></i> +880 1800-000000
+        </span>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <span class="inline-flex items-center gap-1.5 text-slate-300 font-medium">
+          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty
+        </span>
+      </div>
+
+      <!-- Center: Announcement -->
+      <div class="flex-1 flex items-center justify-center text-center px-1 min-w-0">
+        <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs text-slate-200 truncate">
+          <span
+            class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Special Offer
+          </span>
+          <span class="truncate font-medium text-slate-300">Free express delivery over ৳5,000</span>
+          <span class="hidden sm:inline text-slate-600">•</span>
+          <span class="hidden sm:inline text-slate-400 font-medium">Use code <b
+              class="text-white font-mono font-bold bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700 text-[10px]">EASY20</b></span>
+        </div>
+      </div>
+
+      <!-- Right: Links -->
+      <div class="hidden md:flex items-center gap-3.5 text-slate-400 text-xs">
+        <a href="track-order.html" class="hover:text-white transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-truck-fast text-[10px]"></i> Track Order
+        </a>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <a href="index.html#reviews" class="hover:text-white transition-colors">Help Center</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER / NAVBAR (CLEAN NORMAL E-COMMERCE) ===== -->
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-20">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div
+            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
+                class="text-indigo-600">mart</span></span>
+            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+              Audio</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Bar -->
+        <nav
+          class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop
+            All</a>
+          <a href="index.html#collections-section"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+          <a href="index.html#flash-deal"
+            class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            Deals
+          </a>
+          <a href="track-order.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Track
+            Order</a>
+        </nav>
+
+        <!-- Right Side Icons & Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+
+          <!-- Desktop Search Box -->
+          <div
+            class="hidden lg:flex items-center bg-slate-100 hover:bg-slate-50 focus-within:bg-white border border-slate-200 rounded-xl px-3.5 py-2 w-48 xl:w-64 focus-within:border-slate-800 transition-colors">
+            <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+            <input id="search-input-desktop" type="text" placeholder="Search gadgets, audio..."
+              class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none w-full"
+              onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+          </div>
+
+          <!-- Desktop Wishlist Button -->
+          <button onclick="triggerToast('Wishlist', 'Saved to your favorites wishlist!')"
+            class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Wishlist">
+            <i class="fa-regular fa-heart text-lg"></i>
+            <span
+              class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          </button>
+
+          <!-- Desktop Cart Button (Active) -->
+          <a href="cart.html"
+            class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm shadow-indigo-600/25 transition-colors"
+            aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping text-base"></i>
+            <span id="nav-cart-badge"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm">0</span>
+          </a>
+
+          <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
+          <div class="hidden lg:flex items-center">
+            <a href="#"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              <i class="fa-regular fa-user text-xs"></i>
+              <span>Sign In</span>
+            </a>
+          </div>
+
+          <!-- Mobile Menu Hamburger Button -->
+          <button id="menu-btn"
+            class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200"
+            aria-label="Open Menu">
+            <i id="menu-icon" class="fa-solid fa-bars text-sm sm:text-base"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 shadow-xl transition-all">
+      <!-- Search Bar -->
+      <div
+        class="flex items-center bg-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 focus-within:border-indigo-600 focus-within:bg-white transition-all">
+        <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+        <input id="search-input-mobile" type="text" placeholder="Search gadgets, phones, audio..."
+          class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none flex-1"
+          onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+      </div>
+
+      <!-- Mobile Quick Actions -->
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <a href="cart.html"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-indigo-600 text-white transition-all shadow-sm relative">
+          <span id="mobile-cart-badge"
+            class="absolute top-1.5 right-2 w-4 h-4 bg-white text-indigo-600 text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+          <i class="fa-solid fa-bag-shopping text-base mb-1"></i>
+          <span class="text-[11px] font-semibold">Cart</span>
+        </a>
+
+        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span
+            class="absolute top-1.5 right-2 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          <i class="fa-regular fa-heart text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Wishlist (3)</span>
+        </button>
+
+        <a href="#"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200">
+          <i class="fa-regular fa-user text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Sign In</span>
+        </a>
+      </div>
+
+      <div class="h-px bg-slate-100 my-1"></div>
+
+      <!-- Navigation Links -->
+      <div class="space-y-1">
+        <a href="index.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-house w-4 text-center text-slate-400"></i> Home
+        </a>
+        <a href="shop.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> Shop All Products
+        </a>
+        <a href="track-order.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-truck-fast w-4 text-center text-slate-400"></i> Track Order
+        </a>
+        <a href="index.html#collections-section" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-shapes w-4 text-center text-slate-400"></i> Categories
+        </a>
+        <a href="index.html#flash-deal" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
+          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Flash Deals
+        </a>
+        <a href="index.html#reviews" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-star w-4 text-center text-amber-500"></i> Customer Reviews
+        </a>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-headset text-indigo-500"></i> Helpline:
+          1800-000000</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== BREADCRUMB & CHECKOUT PROGRESS STEPPER ===== -->
+  <section class="bg-white border-b border-slate-200/80 py-4 sm:py-5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Stepper Progress Bar -->
+      <div class="max-w-2xl mx-auto mb-3">
+        <div class="flex items-center justify-between relative">
+          <!-- Connecting Line -->
+          <div class="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-slate-200 z-0"></div>
+          <div class="absolute top-1/2 left-0 w-1/3 -translate-y-1/2 h-1 bg-indigo-600 z-0 transition-all duration-500">
+          </div>
+
+          <!-- Step 1: Cart (Active) -->
+          <div class="relative z-10 flex flex-col items-center">
+            <div
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-indigo-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md ring-4 ring-indigo-50">
+              <i class="fa-solid fa-cart-shopping text-xs"></i>
+            </div>
+            <span class="text-[11px] sm:text-xs font-bold text-indigo-600 mt-1.5">1. Bag Review</span>
+          </div>
+
+          <!-- Step 2: Checkout -->
+          <div class="relative z-10 flex flex-col items-center">
+            <div
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border-2 border-slate-300 text-slate-400 font-black text-xs sm:text-sm flex items-center justify-center">
+              2
+            </div>
+            <span class="text-[11px] sm:text-xs font-semibold text-slate-400 mt-1.5">2. Shipping & Pay</span>
+          </div>
+
+          <!-- Step 3: Confirmation -->
+          <div class="relative z-10 flex flex-col items-center">
+            <div
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border-2 border-slate-300 text-slate-400 font-black text-xs sm:text-sm flex items-center justify-center">
+              3
+            </div>
+            <span class="text-[11px] sm:text-xs font-semibold text-slate-400 mt-1.5">3. Confirmation</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="flex-1 py-8 sm:py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header Title & Free Delivery Bar -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            <span>Shopping Cart</span>
+            <span id="cart-items-count-badge"
+              class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">0 items</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Review your tech selections, modify quantities, or apply
+            discount vouchers.</p>
+        </div>
+
+        <button onclick="clearEntireCart()"
+          class="text-xs font-bold text-slate-500 hover:text-rose-600 self-start sm:self-auto flex items-center gap-1.5 transition-colors">
+          <i class="fa-regular fa-trash-can"></i>
+          <span>Clear Shopping Bag</span>
+        </button>
+      </div>
+
+      <!-- Free Delivery Progress Card -->
+      <div id="free-delivery-banner" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs mb-8">
+        <div class="flex items-center justify-between text-xs font-bold mb-2">
+          <span id="free-delivery-text" class="text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-truck-bolt text-indigo-600"></i>
+            <span>Add <strong class="text-indigo-600">৳2,000</strong> more to unlock <strong>FREE Express
+                Delivery</strong>!</span>
+          </span>
+          <span id="free-delivery-percent" class="text-indigo-600 font-black">60%</span>
+        </div>
+        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+          <div id="free-delivery-bar"
+            class="bg-gradient-to-r from-indigo-500 to-emerald-500 h-full rounded-full transition-all duration-500"
+            style="width: 60%"></div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Cart Items (8 cols) & Order Summary (4 cols) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Left: Cart Items List -->
+        <div class="lg:col-span-8 space-y-4">
+
+          <div id="cart-items-container" class="space-y-3">
+            <!-- Dynamic Cart Items Rendered via JavaScript -->
+          </div>
+
+          <!-- Empty Cart Placeholder (Hidden when items exist) -->
+          <div id="empty-cart-state"
+            class="hidden bg-white rounded-3xl border border-slate-200 shadow-xs p-10 sm:p-14 text-center">
+            <div
+              class="w-20 h-20 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-3xl mx-auto mb-4 border border-indigo-100">
+              <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-900">Your Shopping Bag is Empty</h3>
+            <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-sm mx-auto">
+              Looks like you haven't added any tech accessories, smartphones, or headphones yet.
+            </p>
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <a href="shop.html"
+                class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs transition-colors shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-compass"></i>
+                <span>Explore Tech Catalog</span>
+              </a>
+              <button onclick="loadSampleGadgets()"
+                class="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors border border-slate-200">
+                Load Demo Cart Items
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Buttons Below List -->
+          <div id="cart-actions-bar" class="flex flex-wrap items-center justify-between gap-4 pt-4">
+            <a href="shop.html"
+              class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-indigo-600 transition-colors">
+              <i class="fa-solid fa-arrow-left"></i>
+              <span>Back to Shopping</span>
+            </a>
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <i class="fa-solid fa-clock-rotate-left text-slate-400"></i>
+              <span>Prices and availability are guaranteed upon checkout.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Order Summary Sidebar -->
+        <div class="lg:col-span-4 space-y-5">
+
+          <!-- Order Summary Card -->
+          <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-5 sm:p-6 sticky top-28">
+            <h2 class="text-base font-extrabold text-slate-900 pb-4 border-b border-slate-100">Order Summary</h2>
+
+            <!-- Calculations -->
+            <div class="py-4 space-y-3 text-xs">
+              <div class="flex items-center justify-between text-slate-600">
+                <span>Items Subtotal:</span>
+                <span id="summary-subtotal" class="font-bold text-slate-900">৳0</span>
+              </div>
+
+              <div class="flex items-center justify-between text-slate-600">
+                <div class="flex items-center gap-1.5">
+                  <span>Estimated Delivery:</span>
+                  <i class="fa-solid fa-circle-info text-[11px] text-slate-400"
+                    title="Calculated based on delivery location"></i>
+                </div>
+                <span id="summary-shipping" class="font-bold text-emerald-600">FREE</span>
+              </div>
+
+              <!-- Discount Line -->
+              <div id="summary-discount-row" class="hidden flex items-center justify-between text-rose-600">
+                <span>Voucher Discount:</span>
+                <span id="summary-discount" class="font-bold">-৳0</span>
+              </div>
+
+              <!-- Tax Notice -->
+              <div class="flex items-center justify-between text-slate-400 text-[11px]">
+                <span>VAT & Import Taxes:</span>
+                <span class="font-medium text-slate-600">Included in price</span>
+              </div>
+
+              <!-- Total Payable -->
+              <div class="pt-4 border-t border-slate-200 flex items-baseline justify-between">
+                <div>
+                  <span class="text-sm font-extrabold text-slate-900 block">Total Payable:</span>
+                  <span class="text-[10px] text-slate-400">Including shipping & taxes</span>
+                </div>
+                <div class="text-right">
+                  <span id="summary-total" class="text-xl sm:text-2xl font-black text-indigo-600">৳0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Coupon Code Section -->
+            <div class="pt-4 border-t border-slate-100">
+              <label for="coupon-code-input"
+                class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">Have a Voucher
+                Code?</label>
+              <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                  <i class="fa-solid fa-tag text-xs text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                  <input id="coupon-code-input" type="text" placeholder="e.g. EASY20"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs font-semibold uppercase text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-colors">
+                </div>
+                <button type="button" onclick="applyCoupon()"
+                  class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors">
+                  Apply
+                </button>
+              </div>
+              <div id="coupon-applied-tag"
+                class="hidden mt-2 flex items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold">
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                  <span id="applied-coupon-name">EASY20 (20% OFF)</span>
+                </span>
+                <button onclick="removeCoupon()" class="text-slate-400 hover:text-rose-600 text-xs">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <div class="mt-6">
+              <a id="checkout-btn" href="checkout.html"
+                class="shimmer-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all text-center">
+                <span>Proceed to Checkout</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+
+            <!-- Trust Features -->
+            <div class="mt-6 pt-5 border-t border-slate-100 grid grid-cols-2 gap-3 text-[11px] text-slate-500">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-check text-emerald-500 text-sm"></i>
+                <span>Official Warranty</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-rotate-left text-indigo-500 text-sm"></i>
+                <span>7-Day Return</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-truck-fast text-amber-500 text-sm"></i>
+                <span>Fast Nationwide</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-hand-holding-dollar text-pink-500 text-sm"></i>
+                <span>Cash on Delivery</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (WITH SIGNATURE DOTTED MATRIX BACKGROUND) ===== -->
+  <footer
+    class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 mt-16 overflow-hidden">
+    <!-- Dotted Matrix Pattern Overlay -->
+    <div
+      class="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="absolute -top-24 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-900">
+
+        <div class="sm:col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-sm"><i
+                class="fa-solid fa-bag-shopping"></i></div>
+            <span class="font-extrabold text-xl text-white">easy<span class="text-indigo-400">mart</span></span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bangladesh’s premier tech store for genuine smartphones, ANC audio, and wearables.
+          </p>
+          <div class="flex items-center gap-2.5">
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-instagram"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Shop Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="shop.html" class="hover:text-white transition-colors">Flagship Audio</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartphones</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartwatches</a></li>
+            <li><a href="index.html#flash-deal" class="text-amber-400 font-semibold">Special Offers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Customer Support</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="track-order.html" class="hover:text-white transition-colors">Order Tracking</a></li>
+            <li><a href="cart.html" class="hover:text-white transition-colors">Shopping Bag</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Explore Catalog</a></li>
+            <li><a href="https://wa.me/8801800000000" target="_blank" class="hover:text-white transition-colors">Contact
+                Support</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Accepted Payments</h4>
+          <p class="text-xs text-slate-500 mb-2.5">100% secure checkout</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">COD</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <p>© 2026 EasyMart. All rights reserved.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== BACK TO TOP BUTTON ===== -->
+  <button id="back-to-top"
+    class="fixed bottom-5 left-4 z-40 w-10 h-10 rounded-xl bg-white shadow-lg border border-slate-200 text-slate-700 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all opacity-0 pointer-events-none translate-y-3"
+    aria-label="Back to Top">
+    <i class="fa-solid fa-arrow-up text-xs"></i>
+  </button>
+
+  <!-- ===== JAVASCRIPT LOGIC ===== -->
+  <script>
+    // Initial default demo items if cart in localStorage is completely uninitialized
+    const DEFAULT_CART_ITEMS = [
+      {
+        id: "sony-wh1000xm5",
+        name: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
+        variant: "Midnight Black / 30h ANC",
+        price: 36500,
+        original_price: 39999,
+        image: "images/Sony WH-1000XM5.png",
+        quantity: 1
+      },
+      {
+        id: "jbl-flip-6",
+        name: "JBL Flip 6 Portable Waterproof Bluetooth Speaker",
+        variant: "Ocean Blue / IP67",
+        price: 13500,
+        original_price: 14999,
+        image: "images/JBL Flip 6.png",
+        quantity: 1
+      }
+    ];
+
+    let cart = [];
+    let appliedDiscount = 0;
+    let appliedCouponCode = null;
+
+    // Toast Notification Trigger
+    function triggerToast(title, msg) {
+      const toast = document.getElementById('toast');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-msg');
+      if (!toast) return;
+
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Toggle Mobile Menu
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu) menu.classList.toggle('hidden');
+      if (icon) {
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+      }
+    }
+
+    // Initialize cart from localStorage or defaults
+    function loadCart() {
+      const saved = localStorage.getItem('easymart_cart');
+      if (saved) {
+        try {
+          cart = JSON.parse(saved);
+        } catch (e) {
+          cart = [...DEFAULT_CART_ITEMS];
+        }
+      } else {
+        cart = [...DEFAULT_CART_ITEMS];
+        saveCart();
+      }
+
+      // Check for saved coupon
+      const savedCoupon = localStorage.getItem('easymart_coupon');
+      if (savedCoupon) {
+        try {
+          const couponObj = JSON.parse(savedCoupon);
+          appliedCouponCode = couponObj.code;
+          appliedDiscount = couponObj.discount;
+        } catch (e) { }
+      }
+
+      renderCart();
+    }
+
+    // Save cart state to localStorage
+    function saveCart() {
+      localStorage.setItem('easymart_cart', JSON.stringify(cart));
+    }
+
+    // Populate sample gadgets if user cleared cart and wants demo items
+    function loadSampleGadgets() {
+      cart = [...DEFAULT_CART_ITEMS];
+      saveCart();
+      renderCart();
+      triggerToast('Cart Restored', 'Demo gadget items added back to bag!');
+    }
+
+    // Change quantity
+    function updateQty(index, change) {
+      if (!cart[index]) return;
+      cart[index].quantity += change;
+
+      if (cart[index].quantity <= 0) {
+        removeFromCart(index);
+        return;
+      }
+
+      saveCart();
+      renderCart();
+    }
+
+    // Remove item
+    function removeFromCart(index) {
+      if (!cart[index]) return;
+      const itemName = cart[index].name;
+      cart.splice(index, 1);
+      saveCart();
+      renderCart();
+      triggerToast('Item Removed', `${itemName} removed from your bag.`);
+    }
+
+    // Clear entire cart
+    function clearEntireCart() {
+      if (cart.length === 0) return;
+      if (confirm('Are you sure you want to remove all items from your cart?')) {
+        cart = [];
+        appliedDiscount = 0;
+        appliedCouponCode = null;
+        localStorage.removeItem('easymart_coupon');
+        saveCart();
+        renderCart();
+        triggerToast('Cart Cleared', 'Your shopping bag is now empty.');
+      }
+    }
+
+    // Apply Coupon Code
+    function applyCoupon() {
+      const input = document.getElementById('coupon-code-input');
+      const code = input.value.trim().toUpperCase();
+
+      if (!code) {
+        triggerToast('Coupon Error', 'Please enter a voucher code.');
+        return;
+      }
+
+      if (cart.length === 0) {
+        triggerToast('Cart Empty', 'Add items before applying vouchers.');
+        return;
+      }
+
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+      if (code === 'EASY20') {
+        // 20% discount
+        appliedDiscount = Math.round(subtotal * 0.20);
+        appliedCouponCode = 'EASY20 (20% OFF)';
+        localStorage.setItem('easymart_coupon', JSON.stringify({ code: 'EASY20', discount: appliedDiscount }));
+        triggerToast('Coupon Applied!', 'Congratulations! 20% discount has been applied.');
+      } else if (code === 'WELCOME10') {
+        appliedDiscount = Math.min(1000, Math.round(subtotal * 0.10));
+        appliedCouponCode = 'WELCOME10 (10% OFF)';
+        localStorage.setItem('easymart_coupon', JSON.stringify({ code: 'WELCOME10', discount: appliedDiscount }));
+        triggerToast('Coupon Applied!', '৳' + appliedDiscount + ' voucher discount applied.');
+      } else {
+        triggerToast('Invalid Voucher', 'Code not recognized. Try EASY20 for 20% off.');
+        return;
+      }
+
+      input.value = '';
+      renderCart();
+    }
+
+    // Remove coupon
+    function removeCoupon() {
+      appliedDiscount = 0;
+      appliedCouponCode = null;
+      localStorage.removeItem('easymart_coupon');
+      renderCart();
+      triggerToast('Coupon Removed', 'Discount voucher removed.');
+    }
+
+    // Render Cart HTML & Calculations
+    function renderCart() {
+      const container = document.getElementById('cart-items-container');
+      const emptyState = document.getElementById('empty-cart-state');
+      const actionsBar = document.getElementById('cart-actions-bar');
+      const badgeNav = document.getElementById('nav-cart-badge');
+      const badgeCount = document.getElementById('cart-items-count-badge');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      const totalItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+      badgeNav.textContent = totalItemsCount;
+      badgeCount.textContent = `${totalItemsCount} item${totalItemsCount === 1 ? '' : 's'}`;
+
+      if (cart.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        actionsBar.classList.add('hidden');
+        checkoutBtn.classList.add('opacity-50', 'pointer-events-none');
+        document.getElementById('free-delivery-banner').classList.add('hidden');
+
+        document.getElementById('summary-subtotal').textContent = '৳0';
+        document.getElementById('summary-shipping').textContent = '৳0';
+        document.getElementById('summary-total').textContent = '৳0';
+        document.getElementById('summary-discount-row').classList.add('hidden');
+        document.getElementById('coupon-applied-tag').classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      actionsBar.classList.remove('hidden');
+      checkoutBtn.classList.remove('opacity-50', 'pointer-events-none');
+      document.getElementById('free-delivery-banner').classList.remove('hidden');
+
+      // Calculate financials
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+      // Free shipping threshold over ৳5,000
+      const freeShippingThreshold = 5000;
+      let shippingFee = 0;
+      const deliveryBannerText = document.getElementById('free-delivery-text');
+      const deliveryBar = document.getElementById('free-delivery-bar');
+      const deliveryPercent = document.getElementById('free-delivery-percent');
+
+      if (subtotal >= freeShippingThreshold) {
+        shippingFee = 0;
+        deliveryBannerText.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> <span class="text-emerald-700 font-extrabold">🎉 You unlocked FREE Express Delivery!</span>`;
+        deliveryBar.style.width = '100%';
+        deliveryPercent.textContent = '100%';
+        deliveryPercent.className = 'text-emerald-600 font-black';
+      } else {
+        shippingFee = 60; // Standard Dhaka courier
+        const needed = freeShippingThreshold - subtotal;
+        const pct = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+        deliveryBannerText.innerHTML = `<i class="fa-solid fa-truck-bolt text-indigo-600"></i> <span>Add <strong class="text-indigo-600">৳${needed.toLocaleString()}</strong> more to unlock <strong>FREE Express Delivery</strong>!</span>`;
+        deliveryBar.style.width = `${pct}%`;
+        deliveryPercent.textContent = `${pct}%`;
+        deliveryPercent.className = 'text-indigo-600 font-black';
+      }
+
+      // If coupon recalculation needed
+      if (appliedCouponCode && appliedCouponCode.includes('20%')) {
+        appliedDiscount = Math.round(subtotal * 0.20);
+      } else if (appliedCouponCode && appliedCouponCode.includes('10%')) {
+        appliedDiscount = Math.min(1000, Math.round(subtotal * 0.10));
+      }
+
+      const totalPayable = Math.max(0, subtotal + shippingFee - appliedDiscount);
+
+      // Render Item rows
+      container.innerHTML = cart.map((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        return `
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:border-slate-300">
+            
+            <div class="flex items-center gap-4 min-w-0 flex-1">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-slate-50 border border-slate-200 p-2 flex items-center justify-center flex-shrink-0">
+                <img src="${item.image}" alt="${item.name}" class="w-full h-full object-contain">
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold">Genuine</span>
+                  <span class="text-[11px] text-slate-400 font-semibold">EasyMart Direct</span>
+                </div>
+                <h3 class="text-xs sm:text-sm font-black text-slate-900 leading-snug truncate">
+                  <a href="product-details.html" class="hover:text-indigo-600 transition-colors">${item.name}</a>
+                </h3>
+                <p class="text-[11px] text-slate-500 font-medium mt-0.5">${item.variant}</p>
+                
+                <div class="flex items-center gap-2 mt-2 sm:hidden">
+                  <span class="text-sm font-black text-slate-900">৳${item.price.toLocaleString()}</span>
+                  ${item.original_price ? `<span class="text-xs text-slate-400 line-through">৳${item.original_price.toLocaleString()}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+              
+              <!-- Quantity Controls -->
+              <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden shadow-xs">
+                <button type="button" onclick="updateQty(${index}, -1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors text-xs" aria-label="Decrease quantity">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <span class="w-9 text-center font-black text-xs text-slate-900">${item.quantity}</span>
+                <button type="button" onclick="updateQty(${index}, 1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors text-xs" aria-label="Increase quantity">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+
+              <!-- Item Total Price (Desktop) -->
+              <div class="hidden sm:block text-right w-28">
+                <div class="text-sm sm:text-base font-black text-slate-900">৳${itemTotal.toLocaleString()}</div>
+                <div class="text-[11px] text-slate-400 font-medium">৳${item.price.toLocaleString()} / ea</div>
+              </div>
+
+              <!-- Delete Action -->
+              <button type="button" onclick="removeFromCart(${index})" class="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors" title="Remove Item">
+                <i class="fa-regular fa-trash-can text-sm"></i>
+              </button>
+
+            </div>
+
+          </div>
+        `;
+      }).join('');
+
+      // Update Sidebar Summary
+      document.getElementById('summary-subtotal').textContent = `৳${subtotal.toLocaleString()}`;
+      document.getElementById('summary-shipping').innerHTML = shippingFee === 0 ? '<span class="text-emerald-600 font-extrabold">FREE</span>' : `৳${shippingFee}`;
+      document.getElementById('summary-total').textContent = `৳${totalPayable.toLocaleString()}`;
+
+      // Update Coupon Display
+      const discountRow = document.getElementById('summary-discount-row');
+      const discountVal = document.getElementById('summary-discount');
+      const couponTag = document.getElementById('coupon-applied-tag');
+      const couponTagName = document.getElementById('applied-coupon-name');
+
+      if (appliedDiscount > 0 && appliedCouponCode) {
+        discountRow.classList.remove('hidden');
+        discountVal.textContent = `-৳${appliedDiscount.toLocaleString()}`;
+        couponTag.classList.remove('hidden');
+        couponTagName.textContent = appliedCouponCode;
+      } else {
+        discountRow.classList.add('hidden');
+        couponTag.classList.add('hidden');
+      }
+    }
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu) menu.classList.toggle('hidden');
+      if (icon) {
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+      }
+    }
+    document.getElementById('menu-btn')?.addEventListener('click', toggleMobileMenu);
+
+    // Back to top button
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 350) {
+        backToTop?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      } else {
+        backToTop?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }
+    });
+    backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Initialize on page ready
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCart();
+    });
+  </script>
+</body>
+
+</html>

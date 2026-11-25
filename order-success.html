@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Order Confirmed — EasyMart Tech & Audio</title>
+  <meta name="description"
+    content="Thank you for your order! Your purchase has been confirmed and scheduled for express dispatch.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z'/><line x1='3' y1='6' x2='21' y2='6'/><path d='M16 10a4 4 0 0 1-8 0'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          screens: {
+            'xs': '375px',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fafbfc;
+      color: #0f172a;
+    }
+
+    #toast {
+      transform: translateY(-20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(200%);
+      }
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased overflow-x-hidden">
+
+  <!-- ===== FLOATING TOAST NOTIFICATION ===== -->
+  <div id="toast"
+    class="fixed top-5 right-4 sm:right-6 z-50 flex items-center gap-3 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-md max-w-sm">
+    <div
+      class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center flex-shrink-0 text-white text-xs">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="flex flex-col text-xs pr-2">
+      <span id="toast-title" class="font-bold text-white leading-tight">Notification</span>
+      <span id="toast-msg" class="text-slate-300 text-[11px] mt-0.5 leading-snug">Action completed successfully.</span>
+    </div>
+  </div>
+
+  <!-- ===== TOP ANNOUNCEMENT BAR (PREMIUM SLEEK) ===== -->
+  <div id="top-bar"
+    class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50 overflow-hidden">
+    <!-- Dotted Matrix Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Contact & Guarantee -->
+      <div class="hidden md:flex items-center gap-3 text-slate-400 text-xs">
+        <span class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
+          <i class="fa-solid fa-phone text-indigo-400 text-[10px]"></i> +880 1800-000000
+        </span>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <span class="inline-flex items-center gap-1.5 text-slate-300 font-medium">
+          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty
+        </span>
+      </div>
+
+      <!-- Center: Announcement -->
+      <div class="flex-1 flex items-center justify-center text-center px-1 min-w-0">
+        <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs text-slate-200 truncate">
+          <span
+            class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Special Offer
+          </span>
+          <span class="truncate font-medium text-slate-300">Free express delivery over ৳5,000</span>
+          <span class="hidden sm:inline text-slate-600">•</span>
+          <span class="hidden sm:inline text-slate-400 font-medium">Use code <b
+              class="text-white font-mono font-bold bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700 text-[10px]">EASY20</b></span>
+        </div>
+      </div>
+
+      <!-- Right: Links -->
+      <div class="hidden md:flex items-center gap-3.5 text-slate-400 text-xs">
+        <a href="track-order.html" class="hover:text-white transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-truck-fast text-[10px]"></i> Track Order
+        </a>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <a href="index.html#reviews" class="hover:text-white transition-colors">Help Center</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER / NAVBAR (CLEAN NORMAL E-COMMERCE) ===== -->
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-20">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div
+            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
+                class="text-indigo-600">mart</span></span>
+            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+              Audio</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Bar -->
+        <nav
+          class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop
+            All</a>
+          <a href="index.html#collections-section"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+          <a href="index.html#flash-deal"
+            class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            Deals
+          </a>
+          <a href="track-order.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Track
+            Order</a>
+        </nav>
+
+        <!-- Right Side Icons & Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+
+          <!-- Desktop Search Box -->
+          <div
+            class="hidden lg:flex items-center bg-slate-100 hover:bg-slate-50 focus-within:bg-white border border-slate-200 rounded-xl px-3.5 py-2 w-48 xl:w-64 focus-within:border-slate-800 transition-colors">
+            <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+            <input id="search-input-desktop" type="text" placeholder="Search gadgets, audio..."
+              class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none w-full"
+              onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+          </div>
+
+          <!-- Desktop Wishlist Button -->
+          <button onclick="triggerToast('Wishlist', 'Saved to your favorites wishlist!')"
+            class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Wishlist">
+            <i class="fa-regular fa-heart text-lg"></i>
+            <span
+              class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          </button>
+
+          <!-- Desktop Cart Button -->
+          <a href="cart.html"
+            class="relative w-10 h-10 flex items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping text-lg"></i>
+            <span id="nav-cart-badge"
+              class="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
+          </a>
+
+          <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
+          <div class="hidden lg:flex items-center">
+            <a href="#"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              <i class="fa-regular fa-user text-xs"></i>
+              <span>Sign In</span>
+            </a>
+          </div>
+
+          <!-- Mobile Menu Hamburger Button -->
+          <button id="menu-btn"
+            class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200"
+            aria-label="Open Menu">
+            <i id="menu-icon" class="fa-solid fa-bars text-sm sm:text-base"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 shadow-xl transition-all">
+      <!-- Search Bar -->
+      <div
+        class="flex items-center bg-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 focus-within:border-indigo-600 focus-within:bg-white transition-all">
+        <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+        <input id="search-input-mobile" type="text" placeholder="Search gadgets, phones, audio..."
+          class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none flex-1"
+          onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+      </div>
+
+      <!-- Mobile Quick Actions -->
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <a href="cart.html"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span id="mobile-cart-badge"
+            class="absolute top-1.5 right-2 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+          <i class="fa-solid fa-bag-shopping text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Cart</span>
+        </a>
+
+        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span
+            class="absolute top-1.5 right-2 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          <i class="fa-regular fa-heart text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Wishlist (3)</span>
+        </button>
+
+        <a href="#"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200">
+          <i class="fa-regular fa-user text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Sign In</span>
+        </a>
+      </div>
+
+      <div class="h-px bg-slate-100 my-1"></div>
+
+      <!-- Navigation Links -->
+      <div class="space-y-1">
+        <a href="index.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-house w-4 text-center text-slate-400"></i> Home
+        </a>
+        <a href="shop.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> Shop All Products
+        </a>
+        <a href="track-order.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-truck-fast w-4 text-center text-slate-400"></i> Track Order
+        </a>
+        <a href="index.html#collections-section" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-shapes w-4 text-center text-slate-400"></i> Categories
+        </a>
+        <a href="index.html#flash-deal" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
+          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Flash Deals
+        </a>
+        <a href="index.html#reviews" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-star w-4 text-center text-amber-500"></i> Customer Reviews
+        </a>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-headset text-indigo-500"></i> Helpline:
+          1800-000000</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== STEPPER PROGRESS BAR (COMPLETED) ===== -->
+  <section class="bg-white border-b border-slate-200/80 py-4 sm:py-5">
+    <div class="max-w-2xl mx-auto px-4">
+      <div class="flex items-center justify-between relative">
+        <div class="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-emerald-600 z-0"></div>
+
+        <!-- Step 1: Cart (Done) -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md">
+            <i class="fa-solid fa-check text-xs"></i>
+          </div>
+          <span class="text-[11px] sm:text-xs font-bold text-slate-600 mt-1.5">1. Bag Review</span>
+        </div>
+
+        <!-- Step 2: Checkout (Done) -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md">
+            <i class="fa-solid fa-check text-xs"></i>
+          </div>
+          <span class="text-[11px] sm:text-xs font-bold text-slate-600 mt-1.5">2. Shipping & Pay</span>
+        </div>
+
+        <!-- Step 3: Confirmation (Active) -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-indigo-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md ring-4 ring-indigo-50">
+            <i class="fa-solid fa-check-double text-xs"></i>
+          </div>
+          <span class="text-[11px] sm:text-xs font-bold text-indigo-600 mt-1.5">3. Confirmed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN ORDER SUCCESS CONTENT ===== -->
+  <main class="flex-1 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Celebration Card -->
+      <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden mb-8">
+
+        <!-- Header Banner with Green Glow -->
+        <div
+          class="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-8 sm:p-10 text-center relative overflow-hidden">
+          <div
+            class="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+          </div>
+          <div
+            class="absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none">
+          </div>
+
+          <div class="relative z-10">
+            <!-- Animated Success Icon -->
+            <div
+              class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-500/20 text-emerald-400 border-2 border-emerald-400/50 flex items-center justify-center text-2xl sm:text-3xl mx-auto mb-4 shadow-lg shadow-emerald-500/20">
+              <i class="fa-solid fa-check"></i>
+            </div>
+
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Order Successfully Placed
+            </span>
+
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white mt-1">
+              Thank You, <span id="customer-name-display">Customer</span>!
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-300 mt-2 max-w-lg mx-auto">
+              Your genuine tech order has been officially registered with EasyMart. Our logistics warehouse is now
+              preparing your package for courier dispatch.
+            </p>
+
+            <!-- Order ID Highlight Pill with Copy -->
+            <div
+              class="mt-6 inline-flex flex-wrap items-center justify-center gap-2 bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-2.5">
+              <span class="text-xs text-slate-400">Official Invoice Number:</span>
+              <span id="order-invoice-display"
+                class="font-mono font-black text-indigo-400 text-sm tracking-wide">ORD-20261125-XXXXX</span>
+              <button type="button" onclick="copyInvoiceNumber()"
+                class="ml-1 w-7 h-7 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 flex items-center justify-center text-xs transition-colors"
+                title="Copy Invoice ID">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Key Highlights Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 sm:p-6 bg-slate-50 border-b border-slate-200 text-xs">
+          <div>
+            <span class="text-slate-500 text-[11px] block">Order Date</span>
+            <span id="order-date-display" class="font-bold text-slate-900 block mt-0.5">Today</span>
+          </div>
+          <div>
+            <span class="text-slate-500 text-[11px] block">Estimated Delivery</span>
+            <span id="order-delivery-display" class="font-bold text-indigo-600 block mt-0.5">Within 2-3 Days</span>
+          </div>
+          <div>
+            <span class="text-slate-500 text-[11px] block">Payment Gateway</span>
+            <span id="order-payment-display" class="font-bold text-slate-900 block mt-0.5">Cash on Delivery</span>
+          </div>
+          <div>
+            <span class="text-slate-500 text-[11px] block">Total Payable</span>
+            <span id="order-total-display" class="font-black text-slate-900 text-sm block mt-0.5">৳0</span>
+          </div>
+        </div>
+
+        <!-- Direct CTA Action Buttons -->
+        <div
+          class="p-6 sm:p-8 bg-white border-b border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3">
+
+          <!-- Primary Track Order Button -->
+          <a id="track-order-btn" href="track-order.html"
+            class="shimmer-btn w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span>Track Live Order Status</span>
+          </a>
+
+          <!-- Download / Print Invoice -->
+          <button type="button" onclick="printOrderReceipt()"
+            class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-slate-200">
+            <i class="fa-solid fa-print"></i>
+            <span>Print Official Invoice</span>
+          </button>
+
+          <!-- WhatsApp Inquire -->
+          <a id="whatsapp-order-link" href="https://wa.me/8801800000000" target="_blank"
+            class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-emerald-200">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>WhatsApp Support</span>
+          </a>
+
+        </div>
+
+        <!-- 3-Step Fulfillment Roadmap -->
+        <div class="p-6 sm:p-8 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-indigo-600"></i>
+            <span>What Happens Next?</span>
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs relative">
+              <div
+                class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 font-black text-xs flex items-center justify-center mb-3">
+                1</div>
+              <h4 class="text-xs font-black text-slate-900">Order Verification</h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Our support desk reviews product serials and verifies stock availability.
+              </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs relative">
+              <div
+                class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 font-black text-xs flex items-center justify-center mb-3">
+                2</div>
+              <h4 class="text-xs font-black text-slate-900">Dispatched via Courier</h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Assigned to Steadfast / Pathao courier with live tracking SMS sent to your phone.
+              </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs relative">
+              <div
+                class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 font-black text-xs flex items-center justify-center mb-3">
+                3</div>
+              <h4 class="text-xs font-black text-slate-900">Doorstep Delivery</h4>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Rider delivers to your location. Inspect the genuine packaging before paying cash.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Order Items & Shipping Address Details Grid -->
+        <div class="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-200">
+
+          <!-- Items Ordered -->
+          <div>
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-box-archive text-indigo-600"></i>
+              <span>Ordered Gadgets</span>
+            </h3>
+
+            <div id="order-items-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Shipping Destination -->
+          <div>
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-location-dot text-indigo-600"></i>
+              <span>Delivery Details</span>
+            </h3>
+
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-xs space-y-2.5">
+              <div>
+                <span class="text-slate-400 text-[10px] uppercase font-bold block">Recipient Name</span>
+                <span id="detail-name" class="font-bold text-slate-800 text-xs">Customer</span>
+              </div>
+              <div>
+                <span class="text-slate-400 text-[10px] uppercase font-bold block">Contact Number</span>
+                <span id="detail-phone" class="font-mono font-bold text-slate-800 text-xs">01700000000</span>
+              </div>
+              <div>
+                <span class="text-slate-400 text-[10px] uppercase font-bold block">Delivery Address</span>
+                <span id="detail-address" class="font-semibold text-slate-800 text-xs leading-snug">Address</span>
+              </div>
+              <div class="pt-2 border-t border-slate-200/80">
+                <span class="text-slate-400 text-[10px] uppercase font-bold block">Courier Partner</span>
+                <span id="detail-courier" class="font-bold text-indigo-600 text-xs">Steadfast Courier Ltd.</span>
+              </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div class="mt-4 bg-slate-50 rounded-2xl p-4 border border-slate-200 text-xs space-y-2">
+              <div class="flex items-center justify-between text-slate-600">
+                <span>Subtotal:</span>
+                <span id="detail-subtotal" class="font-bold text-slate-800">৳0</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-600">
+                <span>Shipping:</span>
+                <span id="detail-shipping" class="font-bold text-emerald-600">FREE</span>
+              </div>
+              <div id="detail-discount-row" class="hidden flex items-center justify-between text-rose-600">
+                <span>Discount:</span>
+                <span id="detail-discount" class="font-bold">-৳0</span>
+              </div>
+              <div
+                class="pt-2 border-t border-slate-200 flex items-center justify-between font-black text-sm text-slate-900">
+                <span>Total Amount:</span>
+                <span id="detail-total" class="text-indigo-600">৳0</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (WITH SIGNATURE DOTTED MATRIX BACKGROUND) ===== -->
+  <footer
+    class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 mt-16 overflow-hidden">
+    <!-- Dotted Matrix Pattern Overlay -->
+    <div
+      class="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="absolute -top-24 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-900">
+
+        <div class="sm:col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-sm"><i
+                class="fa-solid fa-bag-shopping"></i></div>
+            <span class="font-extrabold text-xl text-white">easy<span class="text-indigo-400">mart</span></span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bangladesh’s premier tech store for genuine smartphones, ANC audio, and wearables.
+          </p>
+          <div class="flex items-center gap-2.5">
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-instagram"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Shop Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="shop.html" class="hover:text-white transition-colors">Flagship Audio</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartphones</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartwatches</a></li>
+            <li><a href="index.html#flash-deal" class="text-amber-400 font-semibold">Special Offers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Customer Support</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="track-order.html" class="hover:text-white transition-colors">Order Tracking</a></li>
+            <li><a href="cart.html" class="hover:text-white transition-colors">Shopping Bag</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Explore Catalog</a></li>
+            <li><a href="https://wa.me/8801800000000" target="_blank" class="hover:text-white transition-colors">Contact
+                Support</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Accepted Payments</h4>
+          <p class="text-xs text-slate-500 mb-2.5">100% secure checkout</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">COD</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <p>© 2026 EasyMart. All rights reserved.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== BACK TO TOP BUTTON ===== -->
+  <button id="back-to-top"
+    class="fixed bottom-5 left-4 z-40 w-10 h-10 rounded-xl bg-white shadow-lg border border-slate-200 text-slate-700 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all opacity-0 pointer-events-none translate-y-3"
+    aria-label="Back to Top">
+    <i class="fa-solid fa-arrow-up text-xs"></i>
+  </button>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    let currentOrder = null;
+
+    // Toast
+    function triggerToast(title, msg) {
+      const toast = document.getElementById('toast');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-msg');
+      if (!toast) return;
+
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Copy Invoice
+    function copyInvoiceNumber() {
+      if (!currentOrder) return;
+      navigator.clipboard.writeText(currentOrder.invoice_no).then(() => {
+        triggerToast('Copied!', `Invoice ${currentOrder.invoice_no} copied to clipboard.`);
+      }).catch(() => {
+        triggerToast('Copy Failed', currentOrder.invoice_no);
+      });
+    }
+
+    // Print Receipt
+    function printOrderReceipt() {
+      if (currentOrder) {
+        window.location.href = `track-order.html?invoice=${currentOrder.invoice_no}&phone=${encodeURIComponent(currentOrder.phone)}`;
+      } else {
+        window.print();
+      }
+    }
+
+    // Initialize Page Data
+    function initSuccessPage() {
+      const params = new URLSearchParams(window.location.search);
+      const invoice = params.get('invoice');
+      const phone = params.get('phone');
+
+      // Try reading from localStorage first
+      const savedOrders = localStorage.getItem('easymart_orders');
+      let ordersList = [];
+      if (savedOrders) {
+        try {
+          ordersList = JSON.parse(savedOrders);
+        } catch (e) { }
+      }
+
+      if (invoice) {
+        currentOrder = ordersList.find(o => o.invoice_no === invoice);
+      }
+
+      if (!currentOrder) {
+        const lastOrder = localStorage.getItem('easymart_last_order');
+        if (lastOrder) {
+          try {
+            currentOrder = JSON.parse(lastOrder);
+          } catch (e) { }
+        }
+      }
+
+      // If still not found, provide an authentic demo order
+      if (!currentOrder) {
+        currentOrder = {
+          invoice_no: invoice || "ORD-20261125-9X72K",
+          phone: phone || "01700000000",
+          customer_name: "Tanvir Ahmed",
+          customer_type: "Online Buyer",
+          created_at: "Nov 25, 2026 • 03:15 PM",
+          order_status: "pending",
+          payment_status: "unpaid",
+          payment_method: "Cash on Delivery",
+          shipping_address: "House 24, Road 7, Sector 3, Uttara",
+          full_location: "Uttara, Dhaka",
+          courier_partner: "Steadfast Courier Ltd.",
+          courier_tracking_id: "TRK-982134",
+          estimated_delivery: "Nov 27, 2026",
+          items: [
+            {
+              id: 1,
+              name: "Sony WH-1000XM5 Wireless Headphones",
+              variant: "Midnight Black / 30h ANC",
+              image: "images/Sony WH-1000XM5.png",
+              quantity: 1,
+              price: 36500
+            }
+          ],
+          subtotal: 36500,
+          shipping_fee: 0,
+          discount: 0,
+          total_amount: 36500
+        };
+      }
+
+      renderOrderDetails(currentOrder);
+    }
+
+    function renderOrderDetails(order) {
+      document.getElementById('customer-name-display').textContent = order.customer_name || 'Customer';
+      document.getElementById('order-invoice-display').textContent = order.invoice_no;
+      document.getElementById('order-date-display').textContent = order.created_at || 'Today';
+      document.getElementById('order-delivery-display').textContent = order.estimated_delivery || 'Within 2-3 Days';
+      document.getElementById('order-payment-display').textContent = order.payment_method;
+      document.getElementById('order-total-display').textContent = `৳${order.total_amount.toLocaleString()}`;
+
+      // Update Track Order Button link directly into track-order.html with query params!
+      const trackBtn = document.getElementById('track-order-btn');
+      trackBtn.href = `track-order.html?invoice=${encodeURIComponent(order.invoice_no)}&phone=${encodeURIComponent(order.phone)}`;
+
+      // WhatsApp link
+      const waLink = document.getElementById('whatsapp-order-link');
+      waLink.href = `https://wa.me/8801800000000?text=Hello%20EasyMart,%20I%20placed%20order%20${encodeURIComponent(order.invoice_no)}%20and%20would%20like%20to%20confirm%20dispatch.`;
+
+      // Recipient details
+      document.getElementById('detail-name').textContent = order.customer_name;
+      document.getElementById('detail-phone').textContent = order.phone;
+      document.getElementById('detail-address').textContent = `${order.shipping_address}, ${order.full_location}`;
+      document.getElementById('detail-courier').textContent = `${order.courier_partner} (ID: ${order.courier_tracking_id})`;
+
+      // Calculations
+      document.getElementById('detail-subtotal').textContent = `৳${order.subtotal.toLocaleString()}`;
+      document.getElementById('detail-shipping').innerHTML = order.shipping_fee === 0 ? '<span class="text-emerald-600 font-extrabold">FREE</span>' : `৳${order.shipping_fee}`;
+      document.getElementById('detail-total').textContent = `৳${order.total_amount.toLocaleString()}`;
+
+      if (order.discount > 0) {
+        document.getElementById('detail-discount-row').classList.remove('hidden');
+        document.getElementById('detail-discount').textContent = `-৳${order.discount.toLocaleString()}`;
+      }
+
+      // Items list
+      const itemsContainer = document.getElementById('order-items-list');
+      itemsContainer.innerHTML = order.items.map(item => `
+        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+          <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-xl object-contain bg-white border border-slate-200 p-1 flex-shrink-0">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-slate-900 truncate">${item.name}</h4>
+            <p class="text-[10px] text-slate-500">${item.variant} • Qty: ${item.quantity}</p>
+          </div>
+          <span class="text-xs font-black text-slate-900 flex-shrink-0">৳${(item.price * item.quantity).toLocaleString()}</span>
+        </div>
+      `).join('');
+    }
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu) menu.classList.toggle('hidden');
+      if (icon) {
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+      }
+    }
+    document.getElementById('menu-btn')?.addEventListener('click', toggleMobileMenu);
+
+    // Back to top button
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 350) {
+        backToTop?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      } else {
+        backToTop?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }
+    });
+    backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    function updateCartBadges() {
+      let currentCart = [];
+      try {
+        const saved = localStorage.getItem('easymart_cart');
+        if (saved) currentCart = JSON.parse(saved);
+      } catch (e) { }
+      const count = currentCart.reduce((acc, i) => acc + (i.quantity || 1), 0);
+      const navB = document.getElementById('nav-cart-badge');
+      const mobB = document.getElementById('mobile-cart-badge');
+      if (navB) navB.textContent = count;
+      if (mobB) mobB.textContent = count;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initSuccessPage();
+      updateCartBadges();
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Secure Checkout — EasyMart Tech & Audio</title>
+  <meta name="description"
+    content="Complete your purchase securely. Enter your shipping address and choose Cash on Delivery, bKash, or Nagad.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z'/><line x1='3' y1='6' x2='21' y2='6'/><path d='M16 10a4 4 0 0 1-8 0'/></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          screens: {
+            'xs': '375px',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fafbfc;
+      color: #0f172a;
+    }
+
+    #toast {
+      transform: translateY(-20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(200%);
+      }
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+    }
+
+    .payment-option-card.active {
+      border-color: #4f46e5;
+      background-color: #f5f3ff;
+      box-shadow: 0 0 0 1px #4f46e5;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased overflow-x-hidden">
+
+  <!-- ===== FLOATING TOAST NOTIFICATION ===== -->
+  <div id="toast"
+    class="fixed top-5 right-4 sm:right-6 z-50 flex items-center gap-3 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-md max-w-sm">
+    <div
+      class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center flex-shrink-0 text-white text-xs">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="flex flex-col text-xs pr-2">
+      <span id="toast-title" class="font-bold text-white leading-tight">Notification</span>
+      <span id="toast-msg" class="text-slate-300 text-[11px] mt-0.5 leading-snug">Action completed successfully.</span>
+    </div>
+  </div>
+
+  <!-- ===== TOP ANNOUNCEMENT BAR (PREMIUM SLEEK) ===== -->
+  <div id="top-bar"
+    class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50 overflow-hidden">
+    <!-- Dotted Matrix Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Contact & Guarantee -->
+      <div class="hidden md:flex items-center gap-3 text-slate-400 text-xs">
+        <span class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
+          <i class="fa-solid fa-phone text-indigo-400 text-[10px]"></i> +880 1800-000000
+        </span>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <span class="inline-flex items-center gap-1.5 text-slate-300 font-medium">
+          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty
+        </span>
+      </div>
+
+      <!-- Center: Announcement -->
+      <div class="flex-1 flex items-center justify-center text-center px-1 min-w-0">
+        <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs text-slate-200 truncate">
+          <span
+            class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Special Offer
+          </span>
+          <span class="truncate font-medium text-slate-300">Free express delivery over ৳5,000</span>
+          <span class="hidden sm:inline text-slate-600">•</span>
+          <span class="hidden sm:inline text-slate-400 font-medium">Use code <b
+              class="text-white font-mono font-bold bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700 text-[10px]">EASY20</b></span>
+        </div>
+      </div>
+
+      <!-- Right: Links -->
+      <div class="hidden md:flex items-center gap-3.5 text-slate-400 text-xs">
+        <a href="track-order.html" class="hover:text-white transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-truck-fast text-[10px]"></i> Track Order
+        </a>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <a href="index.html#reviews" class="hover:text-white transition-colors">Help Center</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER / NAVBAR (CLEAN NORMAL E-COMMERCE) ===== -->
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-20">
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div
+            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
+                class="text-indigo-600">mart</span></span>
+            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+              Audio</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Bar -->
+        <nav
+          class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop
+            All</a>
+          <a href="index.html#collections-section"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+          <a href="index.html#flash-deal"
+            class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            Deals
+          </a>
+          <a href="track-order.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Track
+            Order</a>
+        </nav>
+
+        <!-- Right Side Icons & Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+
+          <!-- Desktop Search Box -->
+          <div
+            class="hidden lg:flex items-center bg-slate-100 hover:bg-slate-50 focus-within:bg-white border border-slate-200 rounded-xl px-3.5 py-2 w-48 xl:w-64 focus-within:border-slate-800 transition-colors">
+            <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+            <input id="search-input-desktop" type="text" placeholder="Search gadgets, audio..."
+              class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none w-full"
+              onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+          </div>
+
+          <!-- Desktop Wishlist Button -->
+          <button onclick="triggerToast('Wishlist', 'Saved to your favorites wishlist!')"
+            class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Wishlist">
+            <i class="fa-regular fa-heart text-lg"></i>
+            <span
+              class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          </button>
+
+          <!-- Desktop Cart Button -->
+          <a href="cart.html"
+            class="relative w-10 h-10 flex items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping text-base"></i>
+            <span id="nav-cart-badge"
+              class="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
+          </a>
+
+          <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
+          <div class="hidden lg:flex items-center">
+            <a href="#"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              <i class="fa-regular fa-user text-xs"></i>
+              <span>Sign In</span>
+            </a>
+          </div>
+
+          <!-- Mobile Menu Hamburger Button -->
+          <button id="menu-btn"
+            class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200"
+            aria-label="Open Menu">
+            <i id="menu-icon" class="fa-solid fa-bars text-sm sm:text-base"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 shadow-xl transition-all">
+      <!-- Search Bar -->
+      <div
+        class="flex items-center bg-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 focus-within:border-indigo-600 focus-within:bg-white transition-all">
+        <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+        <input id="search-input-mobile" type="text" placeholder="Search gadgets, phones, audio..."
+          class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none flex-1"
+          onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+      </div>
+
+      <!-- Mobile Quick Actions -->
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <a href="cart.html"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span id="mobile-cart-badge"
+            class="absolute top-1.5 right-2 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+          <i class="fa-solid fa-bag-shopping text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Cart</span>
+        </a>
+
+        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span
+            class="absolute top-1.5 right-2 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          <i class="fa-regular fa-heart text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Wishlist (3)</span>
+        </button>
+
+        <a href="#"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200">
+          <i class="fa-regular fa-user text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Sign In</span>
+        </a>
+      </div>
+
+      <div class="h-px bg-slate-100 my-1"></div>
+
+      <!-- Navigation Links -->
+      <div class="space-y-1">
+        <a href="index.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-house w-4 text-center text-slate-400"></i> Home
+        </a>
+        <a href="shop.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> Shop All Products
+        </a>
+        <a href="track-order.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-truck-fast w-4 text-center text-slate-400"></i> Track Order
+        </a>
+        <a href="index.html#collections-section" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-shapes w-4 text-center text-slate-400"></i> Categories
+        </a>
+        <a href="index.html#flash-deal" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
+          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Flash Deals
+        </a>
+        <a href="index.html#reviews" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-star w-4 text-center text-amber-500"></i> Customer Reviews
+        </a>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-headset text-indigo-500"></i> Helpline:
+          1800-000000</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== STEPPER PROGRESS BAR ===== -->
+  <section class="bg-white border-b border-slate-200/80 py-4 sm:py-5">
+    <div class="max-w-2xl mx-auto px-4">
+      <div class="flex items-center justify-between relative">
+        <div class="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-slate-200 z-0"></div>
+        <div class="absolute top-1/2 left-0 w-2/3 -translate-y-1/2 h-1 bg-indigo-600 z-0 transition-all duration-500">
+        </div>
+
+        <!-- Step 1: Cart (Done) -->
+        <a href="cart.html" class="relative z-10 flex flex-col items-center group cursor-pointer">
+          <div
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md">
+            <i class="fa-solid fa-check text-xs"></i>
+          </div>
+          <span class="text-[11px] sm:text-xs font-bold text-slate-600 group-hover:text-indigo-600 mt-1.5">1. Bag
+            Review</span>
+        </a>
+
+        <!-- Step 2: Checkout (Active) -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-indigo-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-md ring-4 ring-indigo-50">
+            <i class="fa-solid fa-credit-card text-xs"></i>
+          </div>
+          <span class="text-[11px] sm:text-xs font-bold text-indigo-600 mt-1.5">2. Shipping & Pay</span>
+        </div>
+
+        <!-- Step 3: Confirmation -->
+        <div class="relative z-10 flex flex-col items-center">
+          <div
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border-2 border-slate-300 text-slate-400 font-black text-xs sm:text-sm flex items-center justify-center">
+            3
+          </div>
+          <span class="text-[11px] sm:text-xs font-semibold text-slate-400 mt-1.5">3. Confirmation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN CHECKOUT FORM & SUMMARY ===== -->
+  <main class="flex-1 py-8 sm:py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <form id="checkout-form" onsubmit="handlePlaceOrder(event)">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          <!-- Left Column (7 cols): Customer Info, Shipping & Payment -->
+          <div class="lg:col-span-7 space-y-6">
+
+            <!-- Section 1: Customer & Delivery Details -->
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-7">
+              <div class="flex items-center gap-3 pb-4 border-b border-slate-100 mb-5">
+                <div
+                  class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <div>
+                  <h2 class="text-base font-extrabold text-slate-900">Shipping & Delivery Information</h2>
+                  <p class="text-xs text-slate-500">Provide accurate address and mobile number for prompt courier
+                    dispatch.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <!-- Full Name -->
+                <div class="sm:col-span-2">
+                  <label for="full_name" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Customer Full Name <span class="text-rose-500">*</span>
+                  </label>
+                  <div class="relative">
+                    <i class="fa-regular fa-user text-xs text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="full_name" required placeholder="e.g. Tanvir Ahmed"
+                      class="w-full bg-slate-50/70 border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium">
+                  </div>
+                </div>
+
+                <!-- Primary Phone -->
+                <div>
+                  <label for="phone" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Primary Phone Number <span class="text-rose-500">*</span>
+                  </label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+88</span>
+                    <input type="tel" id="phone" required pattern="[0-9]{11}" placeholder="01700000000"
+                      class="w-full bg-slate-50/70 border border-slate-200 rounded-xl pl-11 pr-3.5 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-all font-mono font-medium">
+                  </div>
+                  <span class="text-[10px] text-slate-400 mt-1 block">11-digit mobile number for courier rider
+                    OTP.</span>
+                </div>
+
+                <!-- Email Address -->
+                <div>
+                  <label for="email" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Email Address (Optional)
+                  </label>
+                  <div class="relative">
+                    <i
+                      class="fa-regular fa-envelope text-xs text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input type="email" id="email" placeholder="tanvir@example.com"
+                      class="w-full bg-slate-50/70 border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium">
+                  </div>
+                </div>
+
+                <!-- Division / District -->
+                <div>
+                  <label for="district" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    District / Region <span class="text-rose-500">*</span>
+                  </label>
+                  <select id="district" onchange="onDistrictChange()" required
+                    class="w-full bg-slate-50/70 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium">
+                    <option value="Dhaka" selected>Dhaka (Inside City)</option>
+                    <option value="Chittagong">Chittagong</option>
+                    <option value="Sylhet">Sylhet</option>
+                    <option value="Rajshahi">Rajshahi</option>
+                    <option value="Khulna">Khulna</option>
+                    <option value="Barishal">Barishal</option>
+                    <option value="Rangpur">Rangpur</option>
+                    <option value="Mymensingh">Mymensingh</option>
+                    <option value="Comilla">Comilla</option>
+                    <option value="Gazipur">Gazipur / Narayanganj</option>
+                  </select>
+                </div>
+
+                <!-- Thana / Area -->
+                <div>
+                  <label for="area" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Thana / Upazila / Area <span class="text-rose-500">*</span>
+                  </label>
+                  <input type="text" id="area" required placeholder="e.g. Uttara Sector 4"
+                    class="w-full bg-slate-50/70 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium">
+                </div>
+
+                <!-- Detailed Delivery Address -->
+                <div class="sm:col-span-2">
+                  <label for="shipping_address" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Street Address / House / Flat No. <span class="text-rose-500">*</span>
+                  </label>
+                  <div class="relative">
+                    <i class="fa-solid fa-location-dot text-xs text-slate-400 absolute left-3.5 top-3"></i>
+                    <textarea id="shipping_address" required rows="2"
+                      placeholder="e.g. House 42, Road 11, Block D, Flat 4B"
+                      class="w-full bg-slate-50/70 border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium"></textarea>
+                  </div>
+                </div>
+
+                <!-- Order Notes -->
+                <div class="sm:col-span-2">
+                  <label for="order_notes" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Special Delivery Instructions (Optional)
+                  </label>
+                  <input type="text" id="order_notes"
+                    placeholder="e.g. Please call before reaching or deliver after 3:00 PM"
+                    class="w-full bg-slate-50/70 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium">
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Section 2: Delivery Speed Option -->
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-7">
+              <div class="flex items-center gap-3 pb-4 border-b border-slate-100 mb-4">
+                <div
+                  class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <div>
+                  <h2 class="text-base font-extrabold text-slate-900">Select Delivery Method</h2>
+                  <p class="text-xs text-slate-500">Choose between standard express or same-day priority dispatch.</p>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <label
+                  class="flex items-center justify-between p-3.5 rounded-2xl border border-indigo-600 bg-indigo-50/40 cursor-pointer transition-all">
+                  <div class="flex items-center gap-3">
+                    <input type="radio" name="shipping_speed" value="standard" checked
+                      onchange="updateShippingCalculations()" class="text-indigo-600 focus:ring-indigo-500">
+                    <div>
+                      <div class="text-xs font-black text-slate-900 flex items-center gap-2">
+                        <span>Standard Express Delivery</span>
+                        <span
+                          class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-extrabold">Popular</span>
+                      </div>
+                      <p class="text-[11px] text-slate-500 mt-0.5">Delivery in 24-48 hours inside Dhaka (48-72 hrs
+                        outside Dhaka)</p>
+                    </div>
+                  </div>
+                  <span id="speed-standard-price" class="text-xs font-bold text-slate-900">৳60</span>
+                </label>
+
+                <label
+                  class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white cursor-pointer transition-all">
+                  <div class="flex items-center gap-3">
+                    <input type="radio" name="shipping_speed" value="express" onchange="updateShippingCalculations()"
+                      class="text-indigo-600 focus:ring-indigo-500">
+                    <div>
+                      <div class="text-xs font-black text-slate-900 flex items-center gap-2">
+                        <span>Dhaka Same-Day Urgent Dispatch</span>
+                        <span
+                          class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[9px] font-extrabold">Super
+                          Fast</span>
+                      </div>
+                      <p class="text-[11px] text-slate-500 mt-0.5">Guaranteed delivery within 6-10 hours (Dhaka Metro
+                        only)</p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-bold text-slate-900">৳150</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Section 3: Payment Options -->
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-7">
+              <div class="flex items-center gap-3 pb-4 border-b border-slate-100 mb-4">
+                <div
+                  class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                  3
+                </div>
+                <div>
+                  <h2 class="text-base font-extrabold text-slate-900">Choose Payment Gateway</h2>
+                  <p class="text-xs text-slate-500">Pay safely via Cash on Delivery or instant Mobile Banking.</p>
+                </div>
+              </div>
+
+              <!-- Payment Method Selector Tabs -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                <!-- Cash On Delivery -->
+                <div onclick="selectPaymentMethod('Cash on Delivery')" id="pm-cod"
+                  class="payment-option-card active p-4 rounded-2xl border border-indigo-600 cursor-pointer transition-all">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-lg text-emerald-600"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                    <i class="fa-solid fa-circle-check text-indigo-600 check-indicator"></i>
+                  </div>
+                  <h4 class="text-xs font-black text-slate-900">Cash on Delivery</h4>
+                  <p class="text-[10px] text-slate-500 mt-1">Pay with cash after inspecting the parcel.</p>
+                </div>
+
+                <!-- bKash -->
+                <div onclick="selectPaymentMethod('bKash')" id="pm-bkash"
+                  class="payment-option-card p-4 rounded-2xl border border-slate-200 hover:border-slate-300 cursor-pointer transition-all">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black text-pink-600 bg-pink-50 px-2 py-0.5 rounded">bKash</span>
+                    <i class="fa-regular fa-circle text-slate-300 check-indicator"></i>
+                  </div>
+                  <h4 class="text-xs font-black text-slate-900">bKash Online</h4>
+                  <p class="text-[10px] text-slate-500 mt-1">Instant mobile wallet checkout.</p>
+                </div>
+
+                <!-- Nagad -->
+                <div onclick="selectPaymentMethod('Nagad')" id="pm-nagad"
+                  class="payment-option-card p-4 rounded-2xl border border-slate-200 hover:border-slate-300 cursor-pointer transition-all">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded">Nagad</span>
+                    <i class="fa-regular fa-circle text-slate-300 check-indicator"></i>
+                  </div>
+                  <h4 class="text-xs font-black text-slate-900">Nagad Pay</h4>
+                  <p class="text-[10px] text-slate-500 mt-1">0% transaction convenience fee.</p>
+                </div>
+
+              </div>
+
+              <!-- Payment Details Dynamic Panel -->
+              <div id="payment-instructions"
+                class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs space-y-2">
+                <div class="flex items-center gap-2 font-bold text-slate-800">
+                  <i class="fa-solid fa-circle-info text-indigo-600"></i>
+                  <span id="instruction-title">Cash on Delivery Selected</span>
+                </div>
+                <p id="instruction-desc" class="text-slate-600 text-[11px] leading-relaxed">
+                  You can inspect the product package in front of the courier delivery executive. Please keep the exact
+                  payable cash ready when the rider arrives.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Right Column (5 cols): Order Items Summary & Checkout Confirmation -->
+          <div class="lg:col-span-5 space-y-5">
+
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-5 sm:p-6 sticky top-28">
+              <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <h3 class="text-base font-extrabold text-slate-900">Your Order Review</h3>
+                <a href="cart.html" class="text-xs font-bold text-indigo-600 hover:underline">Edit Bag</a>
+              </div>
+
+              <!-- Mini Cart Items List -->
+              <div id="checkout-mini-items"
+                class="py-3 divide-y divide-slate-100 max-h-72 overflow-y-auto no-scrollbar">
+                <!-- Injected via JS -->
+              </div>
+
+              <!-- Calculations Breakdown -->
+              <div class="pt-4 border-t border-slate-100 space-y-2.5 text-xs">
+                <div class="flex items-center justify-between text-slate-600">
+                  <span>Items Subtotal:</span>
+                  <span id="summary-subtotal" class="font-bold text-slate-900">৳0</span>
+                </div>
+
+                <div class="flex items-center justify-between text-slate-600">
+                  <span id="summary-shipping-label">Express Delivery (Dhaka):</span>
+                  <span id="summary-shipping" class="font-bold text-slate-900">৳60</span>
+                </div>
+
+                <div id="summary-discount-row" class="hidden flex items-center justify-between text-rose-600">
+                  <span>Voucher Discount:</span>
+                  <span id="summary-discount" class="font-bold">-৳0</span>
+                </div>
+
+                <!-- Total Amount -->
+                <div class="pt-4 border-t border-slate-200 flex items-baseline justify-between">
+                  <div>
+                    <span class="text-sm font-extrabold text-slate-900 block">Total Payable:</span>
+                    <span class="text-[10px] text-slate-400">Cash on delivery or digital payment</span>
+                  </div>
+                  <div class="text-right">
+                    <span id="summary-total" class="text-2xl font-black text-indigo-600">৳0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="mt-6">
+                <button type="submit" id="submit-order-btn"
+                  class="shimmer-btn w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/30 transition-all">
+                  <i class="fa-solid fa-shield-halved text-xs"></i>
+                  <span>Confirm & Place Order</span>
+                  <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+              </div>
+
+              <!-- Safe Checkout Micro-assurances -->
+              <div
+                class="mt-5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-500 space-y-2">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-500 font-bold"></i>
+                  <span>No upfront payment required for Cash on Delivery.</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-500 font-bold"></i>
+                  <span>Live tracking link sent instantly via SMS & Invoice.</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-check text-emerald-500 font-bold"></i>
+                  <span>Official 1-Year EasyMart tech warranty guarantee.</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER (WITH SIGNATURE DOTTED MATRIX BACKGROUND) ===== -->
+  <footer
+    class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 mt-16 overflow-hidden">
+    <!-- Dotted Matrix Pattern Overlay -->
+    <div
+      class="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="absolute -top-24 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-900">
+
+        <div class="sm:col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-sm"><i
+                class="fa-solid fa-bag-shopping"></i></div>
+            <span class="font-extrabold text-xl text-white">easy<span class="text-indigo-400">mart</span></span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bangladesh’s premier tech store for genuine smartphones, ANC audio, and wearables.
+          </p>
+          <div class="flex items-center gap-2.5">
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-instagram"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Shop Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="shop.html" class="hover:text-white transition-colors">Flagship Audio</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartphones</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartwatches</a></li>
+            <li><a href="index.html#flash-deal" class="text-amber-400 font-semibold">Special Offers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Customer Support</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="track-order.html" class="hover:text-white transition-colors">Order Tracking</a></li>
+            <li><a href="cart.html" class="hover:text-white transition-colors">Shopping Bag</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Explore Catalog</a></li>
+            <li><a href="https://wa.me/8801800000000" target="_blank" class="hover:text-white transition-colors">Contact
+                Support</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Accepted Payments</h4>
+          <p class="text-xs text-slate-500 mb-2.5">100% secure checkout</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">COD</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <p>© 2026 EasyMart. All rights reserved.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== BACK TO TOP BUTTON ===== -->
+  <button id="back-to-top"
+    class="fixed bottom-5 left-4 z-40 w-10 h-10 rounded-xl bg-white shadow-lg border border-slate-200 text-slate-700 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all opacity-0 pointer-events-none translate-y-3"
+    aria-label="Back to Top">
+    <i class="fa-solid fa-arrow-up text-xs"></i>
+  </button>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    let cart = [];
+    let appliedDiscount = 0;
+    let selectedPayment = 'Cash on Delivery';
+
+    // Toast Function
+    function triggerToast(title, msg) {
+      const toast = document.getElementById('toast');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-msg');
+      if (!toast) return;
+
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Load Cart from localStorage
+    function initCheckout() {
+      const saved = localStorage.getItem('easymart_cart');
+      if (saved) {
+        try {
+          cart = JSON.parse(saved);
+        } catch (e) {
+          cart = [];
+        }
+      }
+
+      if (!cart || cart.length === 0) {
+        // Fallback demo items
+        cart = [
+          {
+            id: "sony-wh1000xm5",
+            name: "Sony WH-1000XM5 Wireless Headphones",
+            variant: "Midnight Black",
+            price: 36500,
+            image: "images/Sony WH-1000XM5.png",
+            quantity: 1
+          }
+        ];
+        localStorage.setItem('easymart_cart', JSON.stringify(cart));
+      }
+
+      // Check coupon
+      const savedCoupon = localStorage.getItem('easymart_coupon');
+      if (savedCoupon) {
+        try {
+          const couponObj = JSON.parse(savedCoupon);
+          appliedDiscount = couponObj.discount || 0;
+        } catch (e) { }
+      }
+
+      renderMiniItems();
+      updateShippingCalculations();
+    }
+
+    // Render items in right summary panel
+    function renderMiniItems() {
+      const container = document.getElementById('checkout-mini-items');
+      container.innerHTML = cart.map(item => `
+        <div class="flex items-center gap-3 py-3">
+          <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-xl object-contain bg-slate-50 border border-slate-200 p-1 flex-shrink-0">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-slate-900 truncate">${item.name}</h4>
+            <p class="text-[10px] text-slate-500">${item.variant} • Qty: ${item.quantity}</p>
+          </div>
+          <span class="text-xs font-black text-slate-900 flex-shrink-0">৳${(item.price * item.quantity).toLocaleString()}</span>
+        </div>
+      `).join('');
+    }
+
+    // Calculate Delivery & Total
+    function updateShippingCalculations() {
+      const district = document.getElementById('district').value;
+      const speed = document.querySelector('input[name="shipping_speed"]:checked')?.value || 'standard';
+
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      let shippingFee = 0;
+
+      if (speed === 'express') {
+        shippingFee = 150;
+        document.getElementById('summary-shipping-label').textContent = 'Dhaka Same-Day Express:';
+      } else {
+        // Standard speed
+        if (subtotal >= 5000) {
+          shippingFee = 0;
+          document.getElementById('summary-shipping-label').textContent = 'Free Express Delivery:';
+        } else if (district === 'Dhaka') {
+          shippingFee = 60;
+          document.getElementById('summary-shipping-label').textContent = 'Standard Delivery (Dhaka):';
+        } else {
+          shippingFee = 120;
+          document.getElementById('summary-shipping-label').textContent = 'Nationwide Courier:';
+        }
+      }
+
+      const total = Math.max(0, subtotal + shippingFee - appliedDiscount);
+
+      document.getElementById('summary-subtotal').textContent = `৳${subtotal.toLocaleString()}`;
+      document.getElementById('summary-shipping').innerHTML = shippingFee === 0 ? '<span class="text-emerald-600 font-extrabold">FREE</span>' : `৳${shippingFee}`;
+      document.getElementById('summary-total').textContent = `৳${total.toLocaleString()}`;
+
+      if (appliedDiscount > 0) {
+        document.getElementById('summary-discount-row').classList.remove('hidden');
+        document.getElementById('summary-discount').textContent = `-৳${appliedDiscount.toLocaleString()}`;
+      } else {
+        document.getElementById('summary-discount-row').classList.add('hidden');
+      }
+    }
+
+    function onDistrictChange() {
+      updateShippingCalculations();
+    }
+
+    // Select Payment Method
+    function selectPaymentMethod(method) {
+      selectedPayment = method;
+
+      document.querySelectorAll('.payment-option-card').forEach(el => {
+        el.classList.remove('active');
+        const icon = el.querySelector('.check-indicator');
+        if (icon) {
+          icon.className = 'fa-regular fa-circle text-slate-300 check-indicator';
+        }
+      });
+
+      const cardId = method === 'Cash on Delivery' ? 'pm-cod' : (method === 'bKash' ? 'pm-bkash' : 'pm-nagad');
+      const activeCard = document.getElementById(cardId);
+      if (activeCard) {
+        activeCard.classList.add('active');
+        const icon = activeCard.querySelector('.check-indicator');
+        if (icon) {
+          icon.className = 'fa-solid fa-circle-check text-indigo-600 check-indicator';
+        }
+      }
+
+      // Update instructions
+      const title = document.getElementById('instruction-title');
+      const desc = document.getElementById('instruction-desc');
+
+      if (method === 'Cash on Delivery') {
+        title.textContent = 'Cash on Delivery Selected';
+        desc.textContent = 'You can inspect the product package in front of the courier delivery executive. Please keep the exact payable cash ready when the rider arrives.';
+      } else if (method === 'bKash') {
+        title.textContent = 'bKash Mobile Wallet Gateway';
+        desc.textContent = 'After confirming this order, you will receive our merchant payment instructions and an instant SMS invoice with verified bKash payment reference.';
+      } else {
+        title.textContent = 'Nagad Instant Mobile Payment';
+        desc.textContent = 'Safe and zero-convenience fee payment via Nagad. Your order will be placed into priority dispatch automatically upon verification.';
+      }
+    }
+
+    // Handle Place Order
+    function handlePlaceOrder(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('submit-order-btn');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> <span>Processing Order Securely...</span>`;
+      btn.disabled = true;
+
+      const fullName = document.getElementById('full_name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const district = document.getElementById('district').value;
+      const area = document.getElementById('area').value.trim();
+      const address = document.getElementById('shipping_address').value.trim();
+      const notes = document.getElementById('order_notes').value.trim();
+
+      const speed = document.querySelector('input[name="shipping_speed"]:checked')?.value || 'standard';
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+      let shippingFee = 0;
+      if (speed === 'express') {
+        shippingFee = 150;
+      } else {
+        shippingFee = subtotal >= 5000 ? 0 : (district === 'Dhaka' ? 60 : 120);
+      }
+
+      const totalAmount = Math.max(0, subtotal + shippingFee - appliedDiscount);
+
+      // Generate Invoice Number: ORD-YYYYMMDD-XXXXX
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+      const invoiceNo = `ORD-${yyyy}${mm}${dd}-${randomSuffix}`;
+
+      // Estimated delivery date string
+      const estDays = speed === 'express' ? 1 : (district === 'Dhaka' ? 2 : 3);
+      const estDate = new Date();
+      estDate.setDate(estDate.getDate() + estDays);
+      const estString = estDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      // Created timestamp string
+      const timeString = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' + today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      // Build Order Object compatible with track-order.html
+      const order = {
+        invoice_no: invoiceNo,
+        phone: phone,
+        customer_name: fullName,
+        customer_email: email,
+        customer_type: "Online Buyer",
+        created_at: timeString,
+        order_status: "pending",
+        payment_status: selectedPayment === 'Cash on Delivery' ? "unpaid" : "paid",
+        payment_method: selectedPayment,
+        transaction_id: selectedPayment === 'Cash on Delivery' ? "COD-PENDING" : ("TRX-" + Math.floor(10000000 + Math.random() * 90000000)),
+        shipping_address: address,
+        full_location: `${area}, ${district}`,
+        courier_partner: district === 'Dhaka' ? "Steadfast Courier Ltd." : "Pathao Logistics",
+        courier_tracking_id: "TRK-" + Math.floor(100000 + Math.random() * 900000),
+        estimated_delivery: estString,
+        order_notes: notes,
+        items: cart.map((c, idx) => ({
+          id: idx + 1,
+          name: c.name,
+          variant: c.variant || "Standard Edition",
+          image: c.image || "images/Sony WH-1000XM5.png",
+          quantity: c.quantity,
+          price: c.price
+        })),
+        subtotal: subtotal,
+        shipping_fee: shippingFee,
+        discount: appliedDiscount,
+        total_amount: totalAmount,
+        timeline: [
+          {
+            title: "Order Placed Successfully",
+            desc: `Order received with ${selectedPayment}. Verification underway.`,
+            time: timeString,
+            status: "active"
+          }
+        ]
+      };
+
+      // Save order to localStorage
+      try {
+        let existingOrders = [];
+        const savedOrders = localStorage.getItem('easymart_orders');
+        if (savedOrders) existingOrders = JSON.parse(savedOrders);
+        existingOrders.unshift(order);
+        localStorage.setItem('easymart_orders', JSON.stringify(existingOrders));
+        localStorage.setItem('easymart_last_order', JSON.stringify(order));
+
+        // Clear cart & coupon
+        localStorage.removeItem('easymart_cart');
+        localStorage.removeItem('easymart_coupon');
+      } catch (err) {
+        console.error('Storage error:', err);
+      }
+
+      setTimeout(() => {
+        // Redirect to order success page
+        window.location.href = `order-success.html?invoice=${invoiceNo}&phone=${encodeURIComponent(phone)}`;
+      }, 700);
+    }
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu) menu.classList.toggle('hidden');
+      if (icon) {
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-xmark');
+      }
+    }
+    document.getElementById('menu-btn')?.addEventListener('click', toggleMobileMenu);
+
+    // Back to top button
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 350) {
+        backToTop?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      } else {
+        backToTop?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }
+    });
+    backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    function updateCartBadges() {
+      let currentCart = [];
+      try {
+        const saved = localStorage.getItem('easymart_cart');
+        if (saved) currentCart = JSON.parse(saved);
+      } catch (e) { }
+      const count = currentCart.reduce((acc, i) => acc + (i.quantity || 1), 0);
+      const navB = document.getElementById('nav-cart-badge');
+      const mobB = document.getElementById('mobile-cart-badge');
+      if (navB) navB.textContent = count;
+      if (mobB) mobB.textContent = count;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initCheckout();
+      updateCartBadges();
+    });
+  </script>
+
+</body>
+
+</html>

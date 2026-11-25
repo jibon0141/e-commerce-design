@@ -5,10 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Track Your Order - EasyMart Tech & Audio</title>
-  <meta name="description" content="Track your EasyMart order in real time. Enter your Invoice Number and phone to see courier dispatch, estimated delivery time, and live package status.">
+  <meta name="description"
+    content="Track your EasyMart order in real time. Enter your Invoice Number and phone to see courier dispatch, estimated delivery time, and live package status.">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z'/><line x1='3' y1='6' x2='21' y2='6'/><path d='M16 10a4 4 0 0 1-8 0'/></svg>">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z'/><line x1='3' y1='6' x2='21' y2='6'/><path d='M16 10a4 4 0 0 1-8 0'/></svg>">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -43,7 +45,8 @@
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
 
   <!-- FontAwesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -70,13 +73,18 @@
 
     @media print {
       @page {
-        margin: 10mm 12mm;
+        margin: 8mm 12mm;
         size: A4 portrait;
       }
-      *, *::before, *::after {
+
+      *,
+      *::before,
+      *::after {
         box-shadow: none !important;
         text-shadow: none !important;
       }
+
+      html,
       body {
         background: #ffffff !important;
         color: #0f172a !important;
@@ -84,38 +92,59 @@
         line-height: 1.4 !important;
         margin: 0 !important;
         padding: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        display: block !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      /* Hide web UI, header, top-bar, lookup form, tracking stepper, courier logs, footer */
+
+      /* Hide web UI, header, top-bar, lookup form, tracking stepper, courier logs, footer, main container, nav, floating buttons, toast */
       #top-bar,
       header,
+      main,
       footer,
       nav,
       #toast,
+      #back-to-top,
       #lookup-card-section,
       #tracking-result-section,
       .no-print {
         display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        overflow: hidden !important;
       }
-      /* Show ONLY the official company & order invoice */
+
+      /* Show ONLY the official company & order invoice flush at the top */
       #printable-invoice {
         display: block !important;
+        position: static !important;
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
         background: #ffffff !important;
         color: #0f172a !important;
+        break-before: avoid !important;
+        page-break-before: avoid !important;
       }
     }
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
+<body
+  class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
+
+  <!-- ===== DEDICATED CLEAN PRINTABLE INVOICE (SHOWN ONLY ON PRINT / PDF) ===== -->
+  <div id="printable-invoice" aria-hidden="true"></div>
 
   <!-- ===== NOTIFICATION TOAST ===== -->
-  <div id="toast" class="fixed bottom-5 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 pointer-events-none opacity-0 translate-y-3">
+  <div id="toast"
+    class="fixed bottom-5 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 pointer-events-none opacity-0 translate-y-3">
     <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
       <i class="fa-solid fa-check text-sm" id="toast-icon"></i>
     </div>
@@ -125,103 +154,221 @@
     </div>
   </div>
 
-  <!-- ===== TOP ANNOUNCEMENT BAR ===== -->
-  <div id="top-bar" class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      <!-- Left: Contact & Warranty -->
+  <!-- ===== TOP ANNOUNCEMENT BAR (PREMIUM SLEEK) ===== -->
+  <div id="top-bar"
+    class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50 overflow-hidden">
+    <!-- Dotted Matrix Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Contact & Guarantee -->
       <div class="hidden md:flex items-center gap-3 text-slate-400 text-xs">
         <span class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
           <i class="fa-solid fa-phone text-indigo-400 text-[10px]"></i> +880 1800-000000
         </span>
         <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
         <span class="inline-flex items-center gap-1.5 text-slate-300 font-medium">
-          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty Support
+          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty
         </span>
       </div>
 
-      <!-- Center: Status -->
+      <!-- Center: Announcement -->
       <div class="flex-1 flex items-center justify-center text-center px-1 min-w-0">
         <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs text-slate-200 truncate">
-          <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+          <span
+            class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            Live Dispatch
+            Special Offer
           </span>
-          <span class="truncate font-medium text-slate-300">Courier Tracking Connected • Steadfast & Pathao</span>
+          <span class="truncate font-medium text-slate-300">Free express delivery over ৳5,000</span>
+          <span class="hidden sm:inline text-slate-600">•</span>
+          <span class="hidden sm:inline text-slate-400 font-medium">Use code <b
+              class="text-white font-mono font-bold bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700 text-[10px]">EASY20</b></span>
         </div>
       </div>
 
       <!-- Right: Links -->
       <div class="hidden md:flex items-center gap-3.5 text-slate-400 text-xs">
-        <a href="shop.html" class="hover:text-white transition-colors">Shop Catalog</a>
+        <a href="track-order.html" class="hover:text-white transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-truck-fast text-[10px]"></i> Track Order
+        </a>
         <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
         <a href="index.html#reviews" class="hover:text-white transition-colors">Help Center</a>
       </div>
     </div>
   </div>
 
-  <!-- ===== HEADER / NAVBAR ===== -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
+  <!-- ===== HEADER / NAVBAR (CLEAN NORMAL E-COMMERCE) ===== -->
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-14 sm:h-20">
 
         <!-- Logo -->
         <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
-          <div class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 0 1-8 0"/>
+          <div
+            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </div>
           <div class="flex flex-col">
-            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span class="text-indigo-600">mart</span></span>
-            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech & Audio</span>
+            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
+                class="text-indigo-600">mart</span></span>
+            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+              Audio</span>
           </div>
         </a>
 
         <!-- Desktop Navigation Bar -->
-        <nav class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
-          <a href="index.html" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
-          <a href="shop.html" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop All</a>
-          <a href="track-order.html" class="px-4 py-2 text-xs font-bold text-white bg-slate-900 rounded-full shadow-sm flex items-center gap-1.5">
-            <i class="fa-solid fa-truck-fast text-[11px]"></i>
-            <span>Track Order</span>
-          </a>
-          <a href="index.html#flash-deal" class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
+        <nav
+          class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop
+            All</a>
+          <a href="index.html#collections-section"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+          <a href="index.html#flash-deal"
+            class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
             </span>
             Deals
           </a>
-          <a href="index.html#reviews" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Reviews</a>
+          <a href="track-order.html"
+            class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 rounded-full shadow-sm shadow-indigo-600/25 flex items-center gap-1.5">
+            <i class="fa-solid fa-truck-fast text-[11px]"></i>
+            <span>Track Order</span>
+          </a>
         </nav>
 
         <!-- Right Side Icons & Actions -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <a href="shop.html" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">
-            <i class="fa-solid fa-arrow-left text-[10px]"></i>
-            <span>Back to Store</span>
+
+          <!-- Desktop Search Box -->
+          <div
+            class="hidden lg:flex items-center bg-slate-100 hover:bg-slate-50 focus-within:bg-white border border-slate-200 rounded-xl px-3.5 py-2 w-48 xl:w-64 focus-within:border-slate-800 transition-colors">
+            <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+            <input id="search-input-desktop" type="text" placeholder="Search gadgets, audio..."
+              class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none w-full"
+              onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+          </div>
+
+          <!-- Desktop Wishlist Button -->
+          <button onclick="triggerToast('Wishlist', 'Saved to your favorites wishlist!')"
+            class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Wishlist">
+            <i class="fa-regular fa-heart text-lg"></i>
+            <span
+              class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          </button>
+
+          <!-- Desktop Cart Button -->
+          <a href="cart.html"
+            class="relative w-10 h-10 flex items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping text-lg"></i>
+            <span id="nav-cart-badge"
+              class="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
           </a>
 
-          <!-- Mobile Menu Button -->
-          <button id="menu-btn" onclick="toggleMobileMenu()" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors" aria-label="Toggle Navigation Menu">
-            <i class="fa-solid fa-bars text-sm" id="menu-icon"></i>
+          <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
+          <div class="hidden lg:flex items-center">
+            <a href="#"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              <i class="fa-regular fa-user text-xs"></i>
+              <span>Sign In</span>
+            </a>
+          </div>
+
+          <!-- Mobile Menu Hamburger Button -->
+          <button id="menu-btn"
+            class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200"
+            aria-label="Open Menu">
+            <i id="menu-icon" class="fa-solid fa-bars text-sm sm:text-base"></i>
           </button>
         </div>
-
       </div>
     </div>
 
-    <!-- Mobile Drawer Menu -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2 shadow-lg">
-      <a href="index.html" class="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg">Home</a>
-      <a href="shop.html" class="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg">Shop All Products</a>
-      <a href="track-order.html" class="block px-3 py-2 text-xs font-bold text-white bg-slate-900 rounded-lg">
-        <i class="fa-solid fa-truck-fast mr-2"></i>Track Order
-      </a>
-      <a href="index.html#flash-deal" class="block px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg">⚡ Special Deals</a>
-      <a href="index.html#reviews" class="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-lg">Customer Reviews</a>
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 shadow-xl transition-all">
+      <!-- Search Bar -->
+      <div
+        class="flex items-center bg-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 focus-within:border-indigo-600 focus-within:bg-white transition-all">
+        <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+        <input id="search-input-mobile" type="text" placeholder="Search gadgets, phones, audio..."
+          class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none flex-1"
+          onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+      </div>
+
+      <!-- Mobile Quick Actions -->
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <a href="cart.html"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span id="mobile-cart-badge"
+            class="absolute top-1.5 right-2 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+          <i class="fa-solid fa-bag-shopping text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Cart</span>
+        </a>
+
+        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span
+            class="absolute top-1.5 right-2 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          <i class="fa-regular fa-heart text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Wishlist (3)</span>
+        </button>
+
+        <a href="#"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200">
+          <i class="fa-regular fa-user text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Sign In</span>
+        </a>
+      </div>
+
+      <div class="h-px bg-slate-100 my-1"></div>
+
+      <!-- Navigation Links -->
+      <div class="space-y-1">
+        <a href="index.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-house w-4 text-center text-slate-400"></i> Home
+        </a>
+        <a href="shop.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> Shop All Products
+        </a>
+        <a href="track-order.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-bold text-indigo-600 bg-indigo-50 rounded-xl">
+          <i class="fa-solid fa-truck-fast w-4 text-center"></i> Track Order
+        </a>
+        <a href="index.html#collections-section" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-shapes w-4 text-center text-slate-400"></i> Categories
+        </a>
+        <a href="index.html#flash-deal" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
+          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Flash Deals
+        </a>
+        <a href="index.html#reviews" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-star w-4 text-center text-amber-500"></i> Customer Reviews
+        </a>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-headset text-indigo-500"></i> Helpline:
+          1800-000000</span>
+      </div>
     </div>
   </header>
 
@@ -229,15 +376,20 @@
   <main class="flex-1">
 
     <!-- ===== HERO & LOOKUP SECTION ===== -->
-    <section id="lookup-card-section" class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white pt-5 sm:pt-8 pb-8 sm:pb-10 relative overflow-hidden">
+    <section id="lookup-card-section"
+      class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white pt-5 sm:pt-8 pb-8 sm:pb-10 relative overflow-hidden">
       <!-- Background subtle glow & grid -->
-      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+      <div
+        class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+      </div>
       <div class="absolute top-0 right-1/4 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-10 left-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-10 left-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
+      </div>
 
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <!-- Live Badge -->
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-emerald-300 border border-emerald-500/30 backdrop-blur-md mb-2.5 shadow-sm">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-emerald-300 border border-emerald-500/30 backdrop-blur-md mb-2.5 shadow-sm">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>Live Order Tracking</span>
         </div>
@@ -246,13 +398,15 @@
           Track Your Delivery
         </h1>
         <p class="text-xs sm:text-sm text-slate-300 mt-1.5 max-w-lg mx-auto leading-relaxed">
-          Enter your Invoice / Order Number and the Billing Phone Number provided during checkout to see real-time courier dispatch status.
+          Enter your Invoice / Order Number and the Billing Phone Number provided during checkout to see real-time
+          courier dispatch status.
         </p>
 
         <!-- Lookup Form Box -->
-        <div class="mt-5 bg-white text-slate-800 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/90 max-w-xl mx-auto text-left">
+        <div
+          class="mt-5 bg-white text-slate-800 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200/90 max-w-xl mx-auto text-left">
           <form id="tracking-form" onsubmit="handleTrackSubmit(event)" class="space-y-3.5">
-            
+
             <!-- Invoice Number Input -->
             <div>
               <div class="flex items-center justify-between mb-1">
@@ -263,12 +417,8 @@
               </div>
               <div class="relative">
                 <i class="fa-solid fa-hashtag absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                <input type="text"
-                       id="invoice_no"
-                       name="invoice_no"
-                       required
-                       placeholder="e.g. ORD-20261108-7X89Q"
-                       class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs sm:text-sm font-bold font-mono text-slate-900 rounded-xl border border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 outline-none uppercase transition-all">
+                <input type="text" id="invoice_no" name="invoice_no" required placeholder="e.g. ORD-20261108-7X89Q"
+                  class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs sm:text-sm font-bold font-mono text-slate-900 rounded-xl border border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 outline-none uppercase transition-all">
               </div>
             </div>
 
@@ -282,19 +432,14 @@
               </div>
               <div class="relative">
                 <i class="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                <input type="tel"
-                       id="phone"
-                       name="phone"
-                       required
-                       placeholder="e.g. 01700000000"
-                       class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs sm:text-sm font-semibold text-slate-900 rounded-xl border border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 outline-none transition-all">
+                <input type="tel" id="phone" name="phone" required placeholder="e.g. 01700000000"
+                  class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/70 focus:bg-white text-xs sm:text-sm font-semibold text-slate-900 rounded-xl border border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 outline-none transition-all">
               </div>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit"
-                    id="track-btn"
-                    class="w-full py-3 px-6 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-slate-900 hover:bg-slate-800 active:scale-[0.99] shadow-lg shadow-slate-950/20 transition-all flex items-center justify-center gap-2">
+            <button type="submit" id="track-btn"
+              class="w-full py-3 px-6 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-slate-900 hover:bg-slate-800 active:scale-[0.99] shadow-lg shadow-slate-950/20 transition-all flex items-center justify-center gap-2">
               <i class="fa-solid fa-magnifying-glass text-xs"></i>
               <span>Track Order Status</span>
             </button>
@@ -307,21 +452,18 @@
               <span>Try Demo Orders:</span>
             </p>
             <div class="flex flex-wrap gap-2">
-              <button type="button"
-                      onclick="loadDemoOrder('ORD-20261108-7X89Q', '01700000000')"
-                      class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
+              <button type="button" onclick="loadDemoOrder('ORD-20261108-7X89Q', '01700000000')"
+                class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                 <span>Demo 1 (In Transit)</span>
               </button>
-              <button type="button"
-                      onclick="loadDemoOrder('ORD-20261115-3M12D', '01812345678')"
-                      class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
+              <button type="button" onclick="loadDemoOrder('ORD-20261115-3M12D', '01812345678')"
+                class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 <span>Demo 2 (Delivered)</span>
               </button>
-              <button type="button"
-                      onclick="loadDemoOrder('ORD-20261122-8K90P', '01911223344')"
-                      class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
+              <button type="button" onclick="loadDemoOrder('ORD-20261122-8K90P', '01911223344')"
+                class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 text-[11px] font-semibold transition-colors flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                 <span>Demo 3 (Processing)</span>
               </button>
@@ -340,12 +482,14 @@
         <div id="result-display-area">
           <!-- Default State: Prompt to search -->
           <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-8 sm:p-12 text-center max-w-2xl mx-auto">
-            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-4 border border-indigo-100">
+            <div
+              class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-2xl mb-4 border border-indigo-100">
               <i class="fa-solid fa-route"></i>
             </div>
             <h3 class="text-base sm:text-lg font-black text-slate-900">Ready to Track Your Order</h3>
             <p class="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-md mx-auto leading-relaxed">
-              Enter your invoice and phone number above, or click one of the quick demo buttons to see how the live tracking stepper and courier timeline work.
+              Enter your invoice and phone number above, or click one of the quick demo buttons to see how the live
+              tracking stepper and courier timeline work.
             </p>
           </div>
         </div>
@@ -355,12 +499,18 @@
 
   </main>
 
-  <!-- ===== DEDICATED CLEAN PRINTABLE INVOICE (SHOWN ONLY ON PRINT / PDF) ===== -->
-  <div id="printable-invoice" aria-hidden="true"></div>
+  <!-- ===== FOOTER (WITH SIGNATURE DOTTED MATRIX BACKGROUND) ===== -->
+  <footer
+    class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 mt-auto overflow-hidden">
+    <!-- Dotted Matrix Pattern Overlay -->
+    <div
+      class="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="absolute -top-24 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
+    </div>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="bg-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-900">
 
         <!-- Col 1: Store Intro -->
@@ -372,12 +522,19 @@
             <span class="font-extrabold text-xl text-white">easy<span class="text-indigo-400">mart</span></span>
           </a>
           <p class="text-xs text-slate-400 leading-relaxed mb-4">
-            Bangladesh’s premier tech store for genuine smartphones, flagship ANC audio, and wearables with verified official warranty.
+            Bangladesh’s premier tech store for genuine smartphones, flagship ANC audio, and wearables with verified
+            official warranty.
           </p>
           <div class="flex items-center gap-2.5">
-            <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-instagram"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-youtube"></i></a>
           </div>
         </div>
 
@@ -399,7 +556,8 @@
             <li><a href="track-order.html" class="text-white font-bold transition-colors">Order Tracking</a></li>
             <li><a href="index.html#reviews" class="hover:text-white transition-colors">Warranty & Claim</a></li>
             <li><a href="index.html#reviews" class="hover:text-white transition-colors">Return Policy</a></li>
-            <li><a href="https://wa.me/8801800000000" target="_blank" class="hover:text-white transition-colors">WhatsApp Support</a></li>
+            <li><a href="https://wa.me/8801800000000" target="_blank"
+                class="hover:text-white transition-colors">WhatsApp Support</a></li>
           </ul>
         </div>
 
@@ -408,10 +566,15 @@
           <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Accepted Payments</h4>
           <p class="text-xs text-slate-500 mb-2.5">100% secure checkout & verified gateway</p>
           <div class="flex flex-wrap gap-1.5">
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">Cash on Delivery</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">Cash
+              on Delivery</span>
           </div>
         </div>
 
@@ -429,12 +592,15 @@
   </footer>
 
   <!-- ===== MOBILE BOTTOM NAVIGATION BAR ===== -->
-  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 px-4 py-2 flex items-center justify-around shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
+  <nav
+    class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 px-4 py-2 flex items-center justify-around shadow-2xl">
+    <a href="index.html"
+      class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
       <i class="fa-solid fa-house text-base"></i>
       <span class="text-[10px] font-bold">Home</span>
     </a>
-    <a href="shop.html" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
+    <a href="shop.html"
+      class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
       <i class="fa-solid fa-store text-base"></i>
       <span class="text-[10px] font-bold">Shop</span>
     </a>
@@ -442,11 +608,19 @@
       <i class="fa-solid fa-truck-fast text-base"></i>
       <span class="text-[10px] font-bold">Tracking</span>
     </a>
-    <a href="index.html#reviews" class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
+    <a href="index.html#reviews"
+      class="flex flex-col items-center gap-0.5 text-slate-500 hover:text-slate-900 transition-colors">
       <i class="fa-solid fa-headset text-base"></i>
       <span class="text-[10px] font-bold">Help</span>
     </a>
   </nav>
+
+  <!-- ===== BACK TO TOP BUTTON ===== -->
+  <button id="back-to-top"
+    class="fixed bottom-5 left-4 z-40 w-10 h-10 rounded-xl bg-white shadow-lg border border-slate-200 text-slate-700 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all opacity-0 pointer-events-none translate-y-3"
+    aria-label="Back to Top">
+    <i class="fa-solid fa-arrow-up text-xs"></i>
+  </button>
 
   <!-- =================================================================
        ORDER TRACKING CLIENT-SIDE ENGINE
@@ -660,7 +834,7 @@
     function executeTracking(invoiceInput, phoneInput, shouldScroll = false) {
       const resultArea = document.getElementById('result-display-area');
       const btn = document.getElementById('track-btn');
-      
+
       // Temporary loading indicator
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Searching Order...</span>`;
       btn.disabled = true;
@@ -673,10 +847,19 @@
         const cleanInv = invoiceInput.replace(/\s+/g, '').toUpperCase();
         const cleanPhone = phoneInput.replace(/[^0-9]/g, '');
 
-        const foundOrder = mockOrdersDatabase.find(o => {
-          const oInv = o.invoice_no.replace(/\s+/g, '').toUpperCase();
-          const oPhone = o.phone.replace(/[^0-9]/g, '');
-          return oInv === cleanInv && oPhone === cleanPhone;
+        let allOrders = [...mockOrdersDatabase];
+        try {
+          const userOrdersRaw = localStorage.getItem('easymart_orders');
+          if (userOrdersRaw) {
+            const userOrders = JSON.parse(userOrdersRaw);
+            allOrders = [...userOrders, ...allOrders];
+          }
+        } catch (e) { }
+
+        const foundOrder = allOrders.find(o => {
+          const oInv = (o.invoice_no || '').replace(/\s+/g, '').toUpperCase();
+          const oPhone = (o.phone || '').replace(/[^0-9]/g, '');
+          return oInv === cleanInv && (oPhone === cleanPhone || !cleanPhone);
         });
 
         if (foundOrder) {
@@ -803,15 +986,14 @@
           <div class="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative">
               ${stages.map((st, idx) => {
-                const isPassed = currentIdx >= idx;
-                const isCurrent = currentIdx === idx;
-                return `
+        const isPassed = currentIdx >= idx;
+        const isCurrent = currentIdx === idx;
+        return `
                   <div class="flex flex-col items-center text-center relative z-10">
-                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-bold transition-all shadow-sm mb-2.5 ${
-                      isCurrent 
-                        ? 'bg-slate-900 text-white ring-4 ring-indigo-200 scale-105' 
-                        : (isPassed ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-400')
-                    }">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-bold transition-all shadow-sm mb-2.5 ${isCurrent
+            ? 'bg-slate-900 text-white ring-4 ring-indigo-200 scale-105'
+            : (isPassed ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-400')
+          }">
                       <i class="fa-solid ${isPassed && !isCurrent ? 'fa-check' : st.icon} text-sm"></i>
                     </div>
                     <span class="text-xs font-bold ${isCurrent ? 'text-slate-950 font-black' : (isPassed ? 'text-slate-800' : 'text-slate-400')}">
@@ -822,7 +1004,7 @@
                     </span>
                   </div>
                 `;
-              }).join('')}
+      }).join('')}
             </div>
           </div>
 
@@ -965,21 +1147,21 @@
       `).join('');
 
       printContainer.innerHTML = `
-        <div style="max-width: 800px; margin: 0 auto; font-family: 'Inter', system-ui, -apple-system, sans-serif; color: #0f172a; padding: 10px 0;">
+        <div style="max-width: 800px; margin: 0 auto; font-family: 'Inter', system-ui, -apple-system, sans-serif; color: #0f172a; padding: 0;">
           
           <!-- Company Header & Invoice Title -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 18px; border-bottom: 2px solid #0f172a;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 2px solid #0f172a;">
             <div>
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                <div style="width: 32px; height: 32px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 900; font-size: 16px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                <div style="width: 30px; height: 30px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 900; font-size: 15px;">
                   🛍️
                 </div>
                 <div>
-                  <span style="font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px;">easy<span style="color: #4f46e5;">mart</span></span>
+                  <span style="font-size: 22px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px;">easy<span style="color: #4f46e5;">mart</span></span>
                   <span style="display: block; font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Tech & Audio Limited</span>
                 </div>
               </div>
-              <div style="font-size: 11px; color: #475569; line-height: 1.5;">
+              <div style="font-size: 10.5px; color: #475569; line-height: 1.45;">
                 Level 4, Plot 18, Road 11, Banani Commercial Area<br>
                 Dhaka-1213, Bangladesh<br>
                 Helpline: +880 1800-000000 | Email: billing@easymart.com.bd<br>
@@ -988,49 +1170,49 @@
             </div>
 
             <div style="text-align: right;">
-              <div style="display: inline-block; padding: 4px 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0f172a; margin-bottom: 6px;">
+              <div style="display: inline-block; padding: 3px 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0f172a; margin-bottom: 5px;">
                 RETAIL INVOICE / CASH MEMO
               </div>
-              <div style="font-size: 16px; font-weight: 900; font-family: monospace; color: #0f172a;">
+              <div style="font-size: 15px; font-weight: 900; font-family: monospace; color: #0f172a;">
                 ${order.invoice_no}
               </div>
-              <div style="font-size: 11px; color: #475569; margin-top: 4px;">
+              <div style="font-size: 10.5px; color: #475569; margin-top: 3px;">
                 <strong>Order Date:</strong> ${order.created_at}
               </div>
-              <div style="font-size: 11px; color: #475569; margin-top: 2px;">
+              <div style="font-size: 10.5px; color: #475569; margin-top: 2px;">
                 <strong>Payment Status:</strong> <span style="font-weight: 800; color: ${order.payment_status === 'paid' ? '#059669' : '#d97706'}; text-transform: uppercase;">${order.payment_status === 'paid' ? 'PAID' : 'CASH ON DELIVERY'}</span>
               </div>
             </div>
           </div>
 
           <!-- Customer & Order Meta Information (2 Columns) -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid #e2e8f0; font-size: 11px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 12px 0; border-bottom: 1px solid #e2e8f0; font-size: 11px;">
             <div>
-              <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 5px; letter-spacing: 0.5px;">CUSTOMER / BILLED TO:</div>
-              <div style="font-size: 13px; font-weight: 800; color: #0f172a;">${order.customer_name}</div>
+              <div style="font-size: 9.5px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 4px; letter-spacing: 0.5px;">CUSTOMER / BILLED TO:</div>
+              <div style="font-size: 12.5px; font-weight: 800; color: #0f172a;">${order.customer_name}</div>
               <div style="color: #475569; margin-top: 2px;">Membership: <strong>${order.customer_type}</strong></div>
               <div style="color: #475569; margin-top: 2px;">Contact Phone: <strong>${order.phone}</strong></div>
             </div>
 
             <div>
-              <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 5px; letter-spacing: 0.5px;">DELIVERY & PAYMENT DETAILS:</div>
+              <div style="font-size: 9.5px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 4px; letter-spacing: 0.5px;">DELIVERY & PAYMENT DETAILS:</div>
               <div style="font-weight: 700; color: #0f172a;">${order.shipping_address}</div>
               <div style="color: #475569; margin-top: 2px;">${order.full_location}</div>
-              <div style="color: #475569; margin-top: 3px;">Payment Method: <strong>${order.payment_method}</strong></div>
-              ${order.transaction_id ? `<div style="color: #64748b; font-family: monospace; font-size: 10px; margin-top: 1px;">Transaction ID: ${order.transaction_id}</div>` : ''}
+              <div style="color: #475569; margin-top: 2px;">Payment Method: <strong>${order.payment_method}</strong></div>
+              ${order.transaction_id ? `<div style="color: #64748b; font-family: monospace; font-size: 9.5px; margin-top: 1px;">Transaction ID: ${order.transaction_id}</div>` : ''}
             </div>
           </div>
 
           <!-- Product Items Table -->
-          <div style="margin: 18px 0;">
+          <div style="margin: 14px 0;">
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
               <thead>
                 <tr style="background: #0f172a; color: #ffffff;">
-                  <th style="padding: 9px 8px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: center; width: 40px;">#</th>
-                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800;">Item Description & Specifications</th>
-                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: right; width: 110px;">Unit Price</th>
-                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: center; width: 50px;">Qty</th>
-                  <th style="padding: 9px 12px; font-size: 10px; text-transform: uppercase; font-weight: 800; text-align: right; width: 120px;">Total (BDT)</th>
+                  <th style="padding: 7px 8px; font-size: 9.5px; text-transform: uppercase; font-weight: 800; text-align: center; width: 36px;">#</th>
+                  <th style="padding: 7px 10px; font-size: 9.5px; text-transform: uppercase; font-weight: 800;">Item Description & Specifications</th>
+                  <th style="padding: 7px 10px; font-size: 9.5px; text-transform: uppercase; font-weight: 800; text-align: right; width: 100px;">Unit Price</th>
+                  <th style="padding: 7px 10px; font-size: 9.5px; text-transform: uppercase; font-weight: 800; text-align: center; width: 44px;">Qty</th>
+                  <th style="padding: 7px 10px; font-size: 9.5px; text-transform: uppercase; font-weight: 800; text-align: right; width: 110px;">Total (BDT)</th>
                 </tr>
               </thead>
               <tbody>
@@ -1040,8 +1222,8 @@
           </div>
 
           <!-- Calculation Summary -->
-          <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-            <div style="width: 270px; font-size: 11px; line-height: 1.8;">
+          <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+            <div style="width: 260px; font-size: 10.5px; line-height: 1.65;">
               <div style="display: flex; justify-content: space-between; color: #475569;">
                 <span>Subtotal:</span>
                 <span style="font-weight: 700; color: #0f172a;">৳${order.subtotal.toLocaleString()}</span>
@@ -1056,7 +1238,7 @@
                   <span style="font-weight: 700;">-৳${order.discount.toLocaleString()}</span>
                 </div>
               ` : ''}
-              <div style="display: flex; justify-content: space-between; border-top: 2px solid #0f172a; margin-top: 6px; padding-top: 6px; font-size: 14px; font-weight: 900; color: #0f172a;">
+              <div style="display: flex; justify-content: space-between; border-top: 2px solid #0f172a; margin-top: 4px; padding-top: 4px; font-size: 13px; font-weight: 900; color: #0f172a;">
                 <span>Total Amount:</span>
                 <span>৳${order.total_amount.toLocaleString()}</span>
               </div>
@@ -1064,10 +1246,10 @@
           </div>
 
           <!-- Terms, Warranty & Signature -->
-          <div style="margin-top: 32px; padding-top: 16px; border-top: 1px dashed #cbd5e1; display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; font-size: 10px;">
+          <div style="margin-top: 20px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; font-size: 9.5px;">
             <div>
-              <div style="font-weight: 800; text-transform: uppercase; color: #0f172a; margin-bottom: 4px;">Terms of Sale & Warranty:</div>
-              <ol style="margin: 0; padding-left: 14px; color: #64748b; line-height: 1.6;">
+              <div style="font-weight: 800; text-transform: uppercase; color: #0f172a; margin-bottom: 3px;">Terms of Sale & Warranty:</div>
+              <ol style="margin: 0; padding-left: 12px; color: #64748b; line-height: 1.5;">
                 <li>100% genuine products with official manufacturer / EasyMart warranty coverage.</li>
                 <li>7-day replacement warranty applies for any physical hardware manufacturing defects.</li>
                 <li>Please preserve this invoice and the intact original product box for all warranty claims.</li>
@@ -1076,21 +1258,26 @@
 
             <div style="display: flex; flex-direction: column; justify-content: flex-end; text-align: center;">
               <div>
-                <div style="border-top: 1px solid #94a3b8; width: 170px; margin: 0 auto; padding-top: 4px; font-weight: 700; font-size: 10px; color: #334155;">
+                <div style="border-top: 1px solid #94a3b8; width: 160px; margin: 0 auto; padding-top: 4px; font-weight: 700; font-size: 9.5px; color: #334155;">
                   Authorized Signature & Seal<br>
-                  <span style="font-weight: 500; font-size: 9px; color: #64748b;">EasyMart Tech & Audio Ltd.</span>
+                  <span style="font-weight: 500; font-size: 8.5px; color: #64748b;">EasyMart Tech & Audio Ltd.</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Bottom Footer Note -->
-          <div style="text-align: center; margin-top: 22px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 9px; color: #94a3b8;">
+          <div style="text-align: center; margin-top: 16px; padding-top: 6px; border-top: 1px solid #f1f5f9; font-size: 8.5px; color: #94a3b8;">
             Thank you for shopping with EasyMart! • This is an electronically generated retail invoice. • Helpline: 1800-000000
           </div>
 
         </div>
       `;
+            Thank you for shopping with EasyMart! • This is an electronically generated retail invoice. • Helpline: 1800-000000
+          </div >
+
+        </div >
+        `;
     }
 
     // Render Order Not Found Warning State
@@ -1100,7 +1287,7 @@
 
       const resultArea = document.getElementById('result-display-area');
       resultArea.innerHTML = `
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-xl mx-auto">
+        < div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-xl mx-auto" >
           <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto text-2xl mb-4 border border-rose-100">
             <i class="fa-solid fa-triangle-exclamation"></i>
           </div>
@@ -1131,12 +1318,38 @@
               <span>Contact Support</span>
             </a>
           </div>
-        </div>
+        </div >
       `;
     }
 
+    // Cart Synchronization & Badge Updates
+    function updateCartBadges() {
+      let currentCart = [];
+      try {
+        const saved = localStorage.getItem('easymart_cart');
+        if (saved) currentCart = JSON.parse(saved);
+      } catch (e) { }
+      const count = currentCart.reduce((acc, i) => acc + (i.quantity || 1), 0);
+      const navB = document.getElementById('nav-cart-badge');
+      const mobB = document.getElementById('mobile-cart-badge');
+      if (navB) navB.textContent = count;
+      if (mobB) mobB.textContent = count;
+    }
+
+    // Back to top button
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 350) {
+        backToTop?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      } else {
+        backToTop?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }
+    });
+    backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
     // Auto-check URL Query Parameters on page load (e.g. ?invoice=...&phone=...)
     window.addEventListener('DOMContentLoaded', () => {
+      updateCartBadges();
       // Ensure viewport starts firmly at top without jumping
       window.scrollTo(0, 0);
 

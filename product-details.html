@@ -22,7 +22,8 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
@@ -50,6 +51,7 @@
       transform: scale(0.96);
       transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     #zoomPanel.active {
       opacity: 1;
       transform: scale(1);
@@ -59,19 +61,27 @@
     .card-img {
       transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .group:hover .card-img {
       transform: scale(1.08);
     }
 
     /* ========== SHIMMER ========== */
     @keyframes shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(200%); }
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(200%);
+      }
     }
+
     .shimmer-btn {
       position: relative;
       overflow: hidden;
     }
+
     .shimmer-btn::after {
       content: '';
       position: absolute;
@@ -79,7 +89,7 @@
       left: 0;
       width: 50%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
       transform: skewX(-20deg);
       animation: shine 3.5s infinite;
     }
@@ -87,6 +97,7 @@
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
+
     .no-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -97,6 +108,7 @@
       transform: translateY(150%);
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     }
+
     #toast.show {
       transform: translateY(0);
     }
@@ -111,8 +123,10 @@
 <body class="min-h-screen bg-slate-50/70 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
 
   <!-- ===== FLOATING TOAST ===== -->
-  <div id="toast" class="fixed bottom-5 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 pointer-events-none opacity-0">
-    <div id="toast-icon" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-white text-xs flex-shrink-0 shadow-md">
+  <div id="toast"
+    class="fixed bottom-5 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 pointer-events-none opacity-0">
+    <div id="toast-icon"
+      class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center text-white text-xs flex-shrink-0 shadow-md">
       <i class="fa-solid fa-check"></i>
     </div>
     <div class="flex-1 min-w-0">
@@ -121,93 +135,182 @@
     </div>
   </div>
 
-  <!-- ===== TOP ANNOUNCEMENT BAR ===== -->
-  <div class="w-full overflow-hidden bg-gradient-to-r from-indigo-900 via-indigo-700 to-violet-800 text-white text-[11px] sm:text-xs font-medium py-2 px-3 shadow-sm z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="px-2 py-0.5 bg-amber-400/20 text-amber-300 rounded-full font-bold uppercase text-[9px] tracking-wider border border-amber-400/30">Official Store</span>
-        <span class="truncate">Free express delivery on orders over ৳500</span>
+  <!-- ===== TOP ANNOUNCEMENT BAR (PREMIUM SLEEK) ===== -->
+  <div id="top-bar"
+    class="w-full bg-[#090b10] border-b border-slate-800/80 text-slate-300 text-[11px] sm:text-xs py-2 px-3 sm:px-6 relative z-50 overflow-hidden">
+    <!-- Dotted Matrix Grid Pattern -->
+    <div
+      class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <!-- Left: Contact & Guarantee -->
+      <div class="hidden md:flex items-center gap-3 text-slate-400 text-xs">
+        <span class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
+          <i class="fa-solid fa-phone text-indigo-400 text-[10px]"></i> +880 1800-000000
+        </span>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <span class="inline-flex items-center gap-1.5 text-slate-300 font-medium">
+          <i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i> Official Warranty
+        </span>
       </div>
-      <div class="hidden sm:flex items-center gap-4 text-indigo-200 text-xs">
-        <span>Use voucher <b class="text-amber-300 font-extrabold">EASY20</b> for 20% off</span>
+
+      <!-- Center: Announcement -->
+      <div class="flex-1 flex items-center justify-center text-center px-1 min-w-0">
+        <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs text-slate-200 truncate">
+          <span
+            class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Special Offer
+          </span>
+          <span class="truncate font-medium text-slate-300">Free express delivery over ৳5,000</span>
+          <span class="hidden sm:inline text-slate-600">•</span>
+          <span class="hidden sm:inline text-slate-400 font-medium">Use code <b
+              class="text-white font-mono font-bold bg-slate-800/90 px-1.5 py-0.5 rounded border border-slate-700 text-[10px]">EASY20</b></span>
+        </div>
+      </div>
+
+      <!-- Right: Links -->
+      <div class="hidden md:flex items-center gap-3.5 text-slate-400 text-xs">
+        <a href="track-order.html" class="hover:text-white transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-truck-fast text-[10px]"></i> Track Order
+        </a>
+        <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+        <a href="index.html#reviews" class="hover:text-white transition-colors">Help Center</a>
       </div>
     </div>
   </div>
 
-  <!-- ===== HEADER / NAVBAR ===== -->
-  <header class="sticky top-0 z-40 glass-nav transition-all duration-300 w-full">
+  <!-- ===== HEADER / NAVBAR (CLEAN NORMAL E-COMMERCE) ===== -->
+  <header
+    class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs transition-all w-full">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-14 sm:h-20">
 
         <!-- Logo -->
-        <a href="index.html" class="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
-          <div class="w-8 h-8 sm:w-11 sm:h-11 bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-all">
-            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 0 1-8 0"/>
+        <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div
+            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </div>
           <div class="flex flex-col">
-            <span class="font-extrabold text-lg sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">mart</span></span>
-            <span class="text-[8px] sm:text-[9px] text-slate-400 font-bold tracking-[0.2em] uppercase hidden xs:block mt-0.5">Premium Store</span>
+            <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
+                class="text-indigo-600">mart</span></span>
+            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+              Audio</span>
           </div>
         </a>
 
-        <!-- Desktop Nav -->
-        <nav class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
-          <a href="index.html" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Home</a>
-          <a href="shop.html" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-full shadow-sm">Shop All</a>
-          <a href="index.html#collections-section" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Categories</a>
-          <a href="index.html#flash-deal" class="px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-white rounded-full transition-all">Flash Deals</a>
+        <!-- Desktop Navigation Bar -->
+        <nav
+          class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
+          <a href="index.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+          <a href="shop.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop
+            All</a>
+          <a href="index.html#collections-section"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+          <a href="index.html#flash-deal"
+            class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+            </span>
+            Deals
+          </a>
+          <a href="track-order.html"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Track
+            Order</a>
         </nav>
 
         <!-- Right Side Icons & Actions -->
-        <div class="flex items-center gap-1 sm:gap-2.5">
-          <!-- Desktop Wishlist (Hidden on mobile) -->
-          <button onclick="triggerToast('Wishlist', 'Saved to wishlist!')" class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl bg-slate-100/80 hover:bg-rose-50 text-slate-600 hover:text-rose-500 transition-all" aria-label="Wishlist">
-            <i class="fa-regular fa-heart text-base"></i>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">3</span>
+        <div class="flex items-center gap-2 sm:gap-3">
+
+          <!-- Desktop Search Box -->
+          <div
+            class="hidden lg:flex items-center bg-slate-100 hover:bg-slate-50 focus-within:bg-white border border-slate-200 rounded-xl px-3.5 py-2 w-48 xl:w-64 focus-within:border-slate-800 transition-colors">
+            <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+            <input id="search-input-desktop" type="text" placeholder="Search gadgets, audio..."
+              class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none w-full"
+              onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+          </div>
+
+          <!-- Desktop Wishlist Button -->
+          <button onclick="triggerToast('Wishlist', 'Saved to your favorites wishlist!')"
+            class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Wishlist">
+            <i class="fa-regular fa-heart text-lg"></i>
+            <span
+              class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
 
-          <!-- Desktop Cart (Hidden on mobile) -->
-          <button onclick="triggerToast('Shopping Cart', '2 items in your bag.')" class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl bg-slate-100/80 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 transition-all" aria-label="Cart">
-            <i class="fa-solid fa-bag-shopping text-base"></i>
-            <span id="header-cart-count" class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">2</span>
-          </button>
-
-          <!-- Desktop Back to Store -->
-          <a href="index.html" class="hidden lg:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 px-4 py-2.5 rounded-xl transition-all">
-            <i class="fa-solid fa-arrow-left text-[10px]"></i> <span>Back to Store</span>
+          <!-- Desktop Cart Button -->
+          <a href="cart.html"
+            class="hidden lg:flex relative w-10 h-10 items-center justify-center rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+            aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping text-lg"></i>
+            <span id="nav-cart-badge"
+              class="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
           </a>
 
+          <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
+          <div class="hidden lg:flex items-center">
+            <a href="#"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              <i class="fa-regular fa-user text-xs"></i>
+              <span>Sign In</span>
+            </a>
+          </div>
+
           <!-- Mobile Menu Hamburger Button -->
-          <button id="menu-btn" class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl sm:rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200/80 shadow-sm" aria-label="Open Menu">
+          <button id="menu-btn"
+            class="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200"
+            aria-label="Open Menu">
             <i id="menu-icon" class="fa-solid fa-bars text-sm sm:text-base"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Mobile 3-Dot Dropdown Drawer -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200/80 bg-white/98 backdrop-blur-xl px-4 py-4 space-y-3 shadow-2xl transition-all">
-      <!-- Quick Action Cards (Cart, Wishlist, Back) -->
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="triggerToast('Shopping Cart', '2 items in your cart.'); toggleMobileMenu();" class="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 transition-all border border-indigo-100 relative">
-          <span class="absolute top-2 right-3 w-4 h-4 bg-indigo-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">2</span>
-          <i class="fa-solid fa-bag-shopping text-base mb-1"></i>
-          <span class="text-[11px] font-bold">Cart (2)</span>
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu"
+      class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 shadow-xl transition-all">
+      <!-- Search Bar -->
+      <div
+        class="flex items-center bg-slate-100 rounded-xl px-3.5 py-2.5 border border-slate-200 focus-within:border-indigo-600 focus-within:bg-white transition-all">
+        <i class="fa-solid fa-search text-xs text-slate-400 mr-2.5"></i>
+        <input id="search-input-mobile" type="text" placeholder="Search gadgets, phones, audio..."
+          class="text-xs text-slate-800 placeholder:text-slate-400 bg-transparent outline-none flex-1"
+          onkeydown="if(event.key==='Enter') window.location.href='shop.html'">
+      </div>
+
+      <!-- Mobile Quick Actions -->
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <a href="cart.html"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span id="mobile-cart-badge"
+            class="absolute top-1.5 right-2 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+          <i class="fa-solid fa-bag-shopping text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Cart</span>
+        </a>
+
+        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
+          <span
+            class="absolute top-1.5 right-2 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
+          <i class="fa-regular fa-heart text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Wishlist (3)</span>
         </button>
 
-        <button onclick="triggerToast('Wishlist', 'Saved to your favorites!'); toggleMobileMenu();" class="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-rose-50/80 hover:bg-rose-100 text-rose-600 transition-all border border-rose-100 relative">
-          <span class="absolute top-2 right-3 w-4 h-4 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-sm">3</span>
-          <i class="fa-regular fa-heart text-base mb-1"></i>
-          <span class="text-[11px] font-bold">Wishlist (3)</span>
-        </button>
-
-        <a href="index.html" class="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-slate-100/80 hover:bg-slate-200 text-slate-700 transition-all border border-slate-200">
-          <i class="fa-solid fa-arrow-left text-base mb-1"></i>
-          <span class="text-[11px] font-bold">All Store</span>
+        <a href="#"
+          class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200">
+          <i class="fa-regular fa-user text-base mb-1 text-slate-700"></i>
+          <span class="text-[11px] font-semibold">Sign In</span>
         </a>
       </div>
 
@@ -215,19 +318,35 @@
 
       <!-- Navigation Links -->
       <div class="space-y-1">
-        <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-bold text-indigo-600 bg-indigo-50/80 rounded-xl">
-          <i class="fa-solid fa-house w-4 text-center"></i> Home Store
+        <a href="index.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-house w-4 text-center text-slate-400"></i> Home
         </a>
-        <a href="shop.html" class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
-          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> All Products
+        <a href="shop.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-store w-4 text-center text-slate-400"></i> Shop All Products
         </a>
-        <a href="index.html#flash-deal" class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
-          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Today's Deals
+        <a href="track-order.html"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-truck-fast w-4 text-center text-slate-400"></i> Track Order
+        </a>
+        <a href="index.html#collections-section" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-shapes w-4 text-center text-slate-400"></i> Categories
+        </a>
+        <a href="index.html#flash-deal" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">
+          <i class="fa-solid fa-fire w-4 text-center text-rose-500"></i> Flash Deals
+        </a>
+        <a href="index.html#reviews" onclick="toggleMobileMenu();"
+          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl">
+          <i class="fa-solid fa-star w-4 text-center text-amber-500"></i> Customer Reviews
         </a>
       </div>
 
       <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-shield-check text-indigo-500"></i> Official 1-Year Warranty</span>
+        <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-headset text-indigo-500"></i> Helpline:
+          1800-000000</span>
       </div>
     </div>
   </header>
@@ -249,36 +368,52 @@
 
       <!-- LEFT: IMAGE GALLERY & SHOWCASE -->
       <div class="lg:col-span-6 relative">
-        <div class="relative w-full aspect-[16/10] sm:aspect-[16/11] bg-slate-950 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-md overflow-hidden flex items-center justify-center" id="zoomContainer">
-          <span class="absolute top-3.5 left-3.5 z-20 px-2.5 py-1 bg-white/95 backdrop-blur-md text-indigo-700 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider rounded-lg border border-indigo-100 shadow-sm flex items-center gap-1">
+        <div
+          class="relative w-full aspect-[16/10] sm:aspect-[16/11] bg-slate-950 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-md overflow-hidden flex items-center justify-center"
+          id="zoomContainer">
+          <span
+            class="absolute top-3.5 left-3.5 z-20 px-2.5 py-1 bg-white/95 backdrop-blur-md text-indigo-700 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider rounded-lg border border-indigo-100 shadow-sm flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Official Warranty
           </span>
-          <button onclick="triggerToast('Wishlist', 'JBL Flip 6 added to favorites!')" class="absolute top-3.5 right-3.5 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-md text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shadow-sm border border-slate-200/60" aria-label="Favorite">
+          <button onclick="triggerToast('Wishlist', 'JBL Flip 6 added to favorites!')"
+            class="absolute top-3.5 right-3.5 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-md text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shadow-sm border border-slate-200/60"
+            aria-label="Favorite">
             <i class="fa-regular fa-heart text-xs sm:text-base"></i>
           </button>
 
           <!-- Main Product Image (Edge to edge, large, crisp) -->
-          <img id="mainImage" src="images/JBL Flip 6.png" alt="JBL Flip 6" class="w-full h-full object-cover cursor-crosshair transition-transform duration-500">
+          <img id="mainImage" src="images/JBL Flip 6.png" alt="JBL Flip 6"
+            class="w-full h-full object-cover cursor-crosshair transition-transform duration-500">
 
-          <div class="hidden lg:flex absolute bottom-3.5 right-4 text-[10px] text-white/90 font-bold items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 shadow-sm z-20">
+          <div
+            class="hidden lg:flex absolute bottom-3.5 right-4 text-[10px] text-white/90 font-bold items-center gap-1.5 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 shadow-sm z-20">
             <i class="fa-solid fa-magnifying-glass-plus text-indigo-400"></i> Hover to zoom 3×
           </div>
         </div>
 
         <!-- 3X ZOOM PANEL (Desktop only) -->
-        <div id="zoomPanel" class="absolute top-0 left-full ml-4 w-[360px] h-[360px] rounded-3xl overflow-hidden bg-white shadow-2xl border border-indigo-100 z-50 pointer-events-none hidden lg:block">
-          <div id="zoomLens" class="w-full h-full bg-no-repeat" style="background-image: url('images/JBL Flip 6.png'); background-size: 300%; background-position: center;"></div>
+        <div id="zoomPanel"
+          class="absolute top-0 left-full ml-4 w-[360px] h-[360px] rounded-3xl overflow-hidden bg-white shadow-2xl border border-indigo-100 z-50 pointer-events-none hidden lg:block">
+          <div id="zoomLens" class="w-full h-full bg-no-repeat"
+            style="background-image: url('images/JBL Flip 6.png'); background-size: 300%; background-position: center;">
+          </div>
         </div>
 
         <!-- Thumbnail Selector -->
         <div class="flex items-center gap-2.5 sm:gap-3 mt-3 sm:mt-4">
-          <button class="thumb-btn active w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border-2 border-indigo-600 bg-slate-950 overflow-hidden shadow-sm transition-all" data-src="images/JBL Flip 6.png">
+          <button
+            class="thumb-btn active w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border-2 border-indigo-600 bg-slate-950 overflow-hidden shadow-sm transition-all"
+            data-src="images/JBL Flip 6.png">
             <img src="images/JBL Flip 6.png" alt="thumb 1" class="w-full h-full object-cover">
           </button>
-          <button class="thumb-btn w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden hover:border-indigo-400 transition-all opacity-75 hover:opacity-100" data-src="images/Sony WH-1000XM5.png">
+          <button
+            class="thumb-btn w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden hover:border-indigo-400 transition-all opacity-75 hover:opacity-100"
+            data-src="images/Sony WH-1000XM5.png">
             <img src="images/Sony WH-1000XM5.png" alt="thumb 2" class="w-full h-full object-cover">
           </button>
-          <button class="thumb-btn w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden hover:border-indigo-400 transition-all opacity-75 hover:opacity-100" data-src="images/Amazon Echo (4th Gen).png">
+          <button
+            class="thumb-btn w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden hover:border-indigo-400 transition-all opacity-75 hover:opacity-100"
+            data-src="images/Amazon Echo (4th Gen).png">
             <img src="images/Amazon Echo (4th Gen).png" alt="thumb 3" class="w-full h-full object-cover">
           </button>
         </div>
@@ -288,7 +423,9 @@
       <div class="lg:col-span-6 flex flex-col justify-center">
 
         <div class="flex items-center gap-2 mb-2">
-          <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">JBL Acoustic Pro</span>
+          <span
+            class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">JBL
+            Acoustic Pro</span>
           <div class="flex items-center text-amber-400 text-xs gap-1 font-bold">
             <i class="fa-solid fa-star text-[10px]"></i>
             <span class="text-slate-800 font-extrabold">4.8</span>
@@ -300,27 +437,34 @@
           JBL Flip 6 Waterproof Portable Bluetooth Speaker
         </h1>
         <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
-          Bold JBL Original Pro Sound with exceptional clarity through its 2-way speaker system. IP67 dustproof and waterproof with 12 hours of continuous playtime.
+          Bold JBL Original Pro Sound with exceptional clarity through its 2-way speaker system. IP67 dustproof and
+          waterproof with 12 hours of continuous playtime.
         </p>
 
         <!-- Price block -->
-        <div class="flex items-baseline gap-2.5 mt-4 p-3.5 sm:p-4 bg-slate-100/70 rounded-2xl border border-slate-200/70">
+        <div
+          class="flex items-baseline gap-2.5 mt-4 p-3.5 sm:p-4 bg-slate-100/70 rounded-2xl border border-slate-200/70">
           <span class="text-2xl sm:text-4xl font-extrabold text-slate-900">৳8,500</span>
           <span class="text-xs sm:text-base text-slate-400 line-through font-semibold">৳10,500</span>
-          <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-bold rounded-md ml-auto">-19% OFF</span>
+          <span
+            class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-bold rounded-md ml-auto">-19%
+            OFF</span>
         </div>
 
         <!-- Key specs chips -->
         <div class="grid grid-cols-3 gap-2 my-4">
-          <div class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
+          <div
+            class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
             <i class="fa-solid fa-water text-indigo-600 text-xs sm:text-sm mb-1 sm:mb-0"></i>
             <span class="text-[10px] sm:text-xs font-semibold text-slate-700">IP67 Waterproof</span>
           </div>
-          <div class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
+          <div
+            class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
             <i class="fa-solid fa-battery-full text-emerald-600 text-xs sm:text-sm mb-1 sm:mb-0"></i>
             <span class="text-[10px] sm:text-xs font-semibold text-slate-700">12H Playback</span>
           </div>
-          <div class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
+          <div
+            class="flex flex-col sm:flex-row items-center sm:gap-2 bg-white p-2 sm:p-2.5 rounded-xl border border-slate-200 text-center sm:text-left">
             <i class="fa-solid fa-tower-broadcast text-violet-600 text-xs sm:text-sm mb-1 sm:mb-0"></i>
             <span class="text-[10px] sm:text-xs font-semibold text-slate-700">Bluetooth 5.1</span>
           </div>
@@ -328,29 +472,40 @@
 
         <!-- Color Selector -->
         <div class="mb-4">
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Color: <span id="selected-color-name" class="text-indigo-600 font-extrabold">Midnight Black</span></label>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Color: <span
+              id="selected-color-name" class="text-indigo-600 font-extrabold">Midnight Black</span></label>
           <div class="flex items-center gap-2.5">
-            <button onclick="selectColor('Midnight Black', this)" class="color-btn active w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900 ring-2 ring-offset-2 ring-indigo-600 transition-all"></button>
-            <button onclick="selectColor('Ocean Blue', this)" class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
-            <button onclick="selectColor('Fiery Red', this)" class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-red-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
-            <button onclick="selectColor('Forest Green', this)" class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-700 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+            <button onclick="selectColor('Midnight Black', this)"
+              class="color-btn active w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900 ring-2 ring-offset-2 ring-indigo-600 transition-all"></button>
+            <button onclick="selectColor('Ocean Blue', this)"
+              class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+            <button onclick="selectColor('Fiery Red', this)"
+              class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-red-600 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
+            <button onclick="selectColor('Forest Green', this)"
+              class="color-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-700 ring-2 ring-offset-2 ring-transparent hover:ring-slate-300 transition-all"></button>
           </div>
         </div>
 
         <!-- Quantity & Buy Actions (Mobile Friendly) -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-3 border-t border-slate-200">
-          <div class="flex items-center justify-between border-2 border-slate-200 rounded-xl p-1 w-full sm:w-32 bg-white h-11">
-            <button id="qty-minus" class="w-9 h-full rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm transition-colors">−</button>
+        <div
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-3 border-t border-slate-200">
+          <div
+            class="flex items-center justify-between border-2 border-slate-200 rounded-xl p-1 w-full sm:w-32 bg-white h-11">
+            <button id="qty-minus"
+              class="w-9 h-full rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm transition-colors">−</button>
             <span id="qty-val" class="font-extrabold text-sm text-slate-900">1</span>
-            <button id="qty-plus" class="w-9 h-full rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm transition-colors">+</button>
+            <button id="qty-plus"
+              class="w-9 h-full rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm transition-colors">+</button>
           </div>
 
           <div class="flex items-center gap-2 flex-1">
-            <button onclick="addToCart()" class="flex-1 h-11 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm">
-              <i class="fa-solid fa-bag-shopping text-xs"></i> Add to Cart
+            <button id="add-to-cart-btn" onclick="addToCart(false, this)"
+              class="flex-1 h-11 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95">
+              <i class="fa-solid fa-bag-shopping text-xs"></i> <span>Add to Cart</span>
             </button>
 
-            <button onclick="triggerToast('Checkout', 'Proceeding to secure checkout...');" class="shimmer-btn flex-1 h-11 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all">
+            <button onclick="buyNow()"
+              class="shimmer-btn flex-1 h-11 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all active:scale-95">
               <i class="fa-solid fa-bolt text-xs"></i> Buy Now
             </button>
           </div>
@@ -377,9 +532,15 @@
   <!-- ===== TABS SECTION ===== -->
   <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 border-t border-slate-200">
     <div class="flex gap-4 sm:gap-8 border-b border-slate-200 mb-6 overflow-x-auto no-scrollbar">
-      <button class="tab-btn active pb-2.5 text-xs sm:text-sm font-extrabold text-indigo-600 border-b-2 border-indigo-600 whitespace-nowrap transition-colors" data-tab="tab-desc">Overview</button>
-      <button class="tab-btn pb-2.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-700 border-b-2 border-transparent whitespace-nowrap transition-colors" data-tab="tab-specs">Technical Specs</button>
-      <button class="tab-btn pb-2.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-700 border-b-2 border-transparent whitespace-nowrap transition-colors" data-tab="tab-box">In The Box</button>
+      <button
+        class="tab-btn active pb-2.5 text-xs sm:text-sm font-extrabold text-indigo-600 border-b-2 border-indigo-600 whitespace-nowrap transition-colors"
+        data-tab="tab-desc">Overview</button>
+      <button
+        class="tab-btn pb-2.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-700 border-b-2 border-transparent whitespace-nowrap transition-colors"
+        data-tab="tab-specs">Technical Specs</button>
+      <button
+        class="tab-btn pb-2.5 text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-700 border-b-2 border-transparent whitespace-nowrap transition-colors"
+        data-tab="tab-box">In The Box</button>
     </div>
 
     <!-- TAB 1: Overview -->
@@ -388,13 +549,16 @@
         <div>
           <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-2">Louder, More Powerful Sound</h3>
           <p class="mb-3">
-            The beat goes on with the JBL Flip 6 2-way speaker system, engineered to deliver loud, crystal clear, powerful sound. Its racetrack-shaped woofer delivers exceptional low frequencies and midrange, while a separate tweeter produces crisp, clear high-frequencies.
+            The beat goes on with the JBL Flip 6 2-way speaker system, engineered to deliver loud, crystal clear,
+            powerful sound. Its racetrack-shaped woofer delivers exceptional low frequencies and midrange, while a
+            separate tweeter produces crisp, clear high-frequencies.
           </p>
         </div>
         <div>
           <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-2">IP67 Waterproof & Dustproof</h3>
           <p>
-            To the pool. To the park. JBL Flip 6 is IP67 waterproof and dustproof, so you can bring your speaker anywhere. Up to 12 hours of playtime on a single charge.
+            To the pool. To the park. JBL Flip 6 is IP67 waterproof and dustproof, so you can bring your speaker
+            anywhere. Up to 12 hours of playtime on a single charge.
           </p>
         </div>
       </div>
@@ -425,10 +589,14 @@
     <!-- TAB 3: What's in the Box -->
     <div id="tab-box" class="tab-content hidden">
       <ul class="space-y-2 text-xs sm:text-sm text-slate-700">
-        <li class="flex items-center gap-2.5"><i class="fa-solid fa-box text-indigo-600"></i> 1 x JBL Flip 6 Bluetooth Speaker</li>
-        <li class="flex items-center gap-2.5"><i class="fa-solid fa-plug text-indigo-600"></i> 1 x Type-C Fast USB Cable</li>
-        <li class="flex items-center gap-2.5"><i class="fa-solid fa-book-open text-indigo-600"></i> 1 x Quick Start Guide</li>
-        <li class="flex items-center gap-2.5"><i class="fa-solid fa-shield text-indigo-600"></i> 1 x Official 1-Year Warranty Card</li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-box text-indigo-600"></i> 1 x JBL Flip 6 Bluetooth
+          Speaker</li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-plug text-indigo-600"></i> 1 x Type-C Fast USB Cable
+        </li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-book-open text-indigo-600"></i> 1 x Quick Start
+          Guide</li>
+        <li class="flex items-center gap-2.5"><i class="fa-solid fa-shield text-indigo-600"></i> 1 x Official 1-Year
+          Warranty Card</li>
       </ul>
     </div>
   </section>
@@ -444,46 +612,57 @@
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
 
-      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+      <a href="index.html"
+        class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
         <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
           <img src="images/Sony WH-1000XM5.png" alt="Sony WH-1000XM5" class="w-full h-full object-cover card-img">
         </div>
         <div class="p-3 flex-1 flex flex-col">
           <span class="text-[9px] uppercase font-bold text-indigo-600 truncate">Sony • Audio</span>
-          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">Sony WH-1000XM5</h4>
+          <h4
+            class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">
+            Sony WH-1000XM5</h4>
           <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳34,900</span>
         </div>
       </a>
 
-      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+      <a href="index.html"
+        class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
         <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
-          <img src="images/Apple Watch Series 8.png" alt="Apple Watch Series 8" class="w-full h-full object-cover card-img">
+          <img src="images/Apple Watch Series 8.png" alt="Apple Watch Series 8"
+            class="w-full h-full object-cover card-img">
         </div>
         <div class="p-3 flex-1 flex flex-col">
           <span class="text-[9px] uppercase font-bold text-amber-600 truncate">Apple • Watch</span>
-          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-amber-600 transition-colors">Apple Watch 8</h4>
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-amber-600 transition-colors">
+            Apple Watch 8</h4>
           <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳42,500</span>
         </div>
       </a>
 
-      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-sky-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+      <a href="index.html"
+        class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-sky-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
         <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
           <img src="images/Amazon Echo (4th Gen).png" alt="Amazon Echo" class="w-full h-full object-cover card-img">
         </div>
         <div class="p-3 flex-1 flex flex-col">
           <span class="text-[9px] uppercase font-bold text-sky-600 truncate">Amazon • Smart Hub</span>
-          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-sky-600 transition-colors">Amazon Echo 4th</h4>
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-sky-600 transition-colors">
+            Amazon Echo 4th</h4>
           <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳9,900</span>
         </div>
       </a>
 
-      <a href="index.html" class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-violet-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
+      <a href="index.html"
+        class="product-card group bg-white rounded-2xl border border-slate-200/90 hover:border-violet-400 hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col">
         <div class="w-full aspect-[16/10] bg-slate-950 overflow-hidden relative">
           <img src="images/Google-Pixel-7.png" alt="Google Pixel 7" class="w-full h-full object-cover card-img">
         </div>
         <div class="p-3 flex-1 flex flex-col">
           <span class="text-[9px] uppercase font-bold text-violet-600 truncate">Google • Pixel</span>
-          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-violet-600 transition-colors">Google Pixel 7</h4>
+          <h4
+            class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-violet-600 transition-colors">
+            Google Pixel 7</h4>
           <span class="text-xs sm:text-sm font-extrabold text-slate-900 mt-1">৳58,900</span>
         </div>
       </a>
@@ -491,16 +670,97 @@
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="bg-slate-950 text-slate-400 py-8 border-t border-slate-900 text-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:flex sm:justify-between sm:items-center">
-      <div class="flex items-center justify-center sm:justify-start gap-2 mb-3 sm:mb-0">
-        <div class="w-6 h-6 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-xs"><i class="fa-solid fa-bag-shopping"></i></div>
-        <span class="font-extrabold text-sm text-white">easy<span class="text-indigo-400">mart</span></span>
+  <!-- ===== FOOTER (WITH SIGNATURE DOTTED MATRIX BACKGROUND) ===== -->
+  <footer
+    class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-400 pt-12 pb-10 border-t border-slate-900 overflow-hidden">
+    <!-- Dotted Matrix Pattern Overlay -->
+    <div
+      class="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+    </div>
+    <div class="absolute -top-24 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-900">
+
+        <div class="sm:col-span-2 md:col-span-1">
+          <a href="index.html" class="flex items-center gap-2 mb-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center text-white text-sm"><i
+                class="fa-solid fa-bag-shopping"></i></div>
+            <span class="font-extrabold text-xl text-white">easy<span class="text-indigo-400">mart</span></span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bangladesh’s premier tech store for genuine smartphones, ANC audio, and wearables.
+          </p>
+          <div class="flex items-center gap-2.5">
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-instagram"></i></a>
+            <a href="#"
+              class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all"><i
+                class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Shop Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="shop.html" class="hover:text-white transition-colors">Flagship Audio</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartphones</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Smartwatches</a></li>
+            <li><a href="index.html#flash-deal" class="text-amber-400 font-semibold">Special Offers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Customer Support</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="track-order.html" class="hover:text-white transition-colors">Order Tracking</a></li>
+            <li><a href="cart.html" class="hover:text-white transition-colors">Shopping Bag</a></li>
+            <li><a href="shop.html" class="hover:text-white transition-colors">Explore Catalog</a></li>
+            <li><a href="https://wa.me/8801800000000" target="_blank" class="hover:text-white transition-colors">Contact
+                Support</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Accepted Payments</h4>
+          <p class="text-xs text-slate-500 mb-2.5">100% secure checkout</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-pink-400">bKash</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-orange-400">Nagad</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-purple-400">Rocket</span>
+            <span
+              class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[10px] font-bold text-emerald-400">COD</span>
+          </div>
+        </div>
+
       </div>
-      <p class="text-[11px] text-slate-500">© 2026 EasyMart. Genuine products with full warranty.</p>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <p>© 2026 EasyMart. All rights reserved.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="hover:text-white transition-colors">Privacy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <!-- ===== BACK TO TOP BUTTON ===== -->
+  <button id="back-to-top"
+    class="fixed bottom-5 left-4 z-40 w-10 h-10 rounded-xl bg-white shadow-lg border border-slate-200 text-slate-700 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all opacity-0 pointer-events-none translate-y-3"
+    aria-label="Back to Top">
+    <i class="fa-solid fa-arrow-up text-xs"></i>
+  </button>
 
   <!-- ===== SCRIPTS ===== -->
   <script>
@@ -521,12 +781,72 @@
       }, 3000);
     }
 
-    let cartCount = 2;
-    function addToCart() {
-      cartCount++;
+    function updateCartCountBadge() {
+      let currentCart = [];
+      try {
+        const saved = localStorage.getItem('easymart_cart');
+        if (saved) currentCart = JSON.parse(saved);
+      } catch (e) { }
+      const totalCount = currentCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const navB = document.getElementById('nav-cart-badge');
+      const mobB = document.getElementById('mobile-cart-badge');
       const el = document.getElementById('header-cart-count');
-      if (el) el.textContent = cartCount;
-      triggerToast('Cart Updated', 'JBL Flip 6 added to your bag!');
+      const mobileEl = document.getElementById('mobile-cart-count');
+      if (navB) navB.textContent = totalCount;
+      if (mobB) mobB.textContent = totalCount;
+      if (el) el.textContent = totalCount;
+      if (mobileEl) mobileEl.textContent = totalCount;
+    }
+
+    function addToCart(redirect = false, btnElement = null) {
+      const color = document.getElementById('selected-color-name')?.textContent || 'Ocean Blue';
+      let currentCart = [];
+      try {
+        const saved = localStorage.getItem('easymart_cart');
+        if (saved) currentCart = JSON.parse(saved);
+      } catch (e) { }
+
+      const existingIdx = currentCart.findIndex(item => item.id === 'jbl-flip-6' && item.variant.includes(color));
+      if (existingIdx > -1) {
+        currentCart[existingIdx].quantity += qty;
+      } else {
+        currentCart.push({
+          id: 'jbl-flip-6',
+          name: 'JBL Flip 6 Portable Waterproof Bluetooth Speaker',
+          variant: `${color} / IP67 Waterproof`,
+          price: 13500,
+          original_price: 14999,
+          image: 'images/JBL Flip 6.png',
+          quantity: qty
+        });
+      }
+
+      localStorage.setItem('easymart_cart', JSON.stringify(currentCart));
+      updateCartCountBadge();
+
+      if (redirect) {
+        window.location.href = 'checkout.html';
+      } else {
+        triggerToast('Cart Updated', `${qty}x JBL Flip 6 added to your bag!`);
+
+        // Micro-interaction: Instant Tactile Feedback on Clicked Button
+        if (btnElement && !btnElement.dataset.animating) {
+          btnElement.dataset.animating = 'true';
+          const originalContent = btnElement.innerHTML;
+          btnElement.classList.add('!bg-emerald-600', '!text-white', '!shadow-emerald-500/30', 'scale-95');
+          btnElement.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Added!</span>`;
+
+          setTimeout(() => {
+            btnElement.classList.remove('!bg-emerald-600', '!text-white', '!shadow-emerald-500/30', 'scale-95');
+            btnElement.innerHTML = originalContent;
+            delete btnElement.dataset.animating;
+          }, 1200);
+        }
+      }
+    }
+
+    function buyNow() {
+      addToCart(true);
     }
 
     function selectColor(color, btn) {
@@ -626,6 +946,21 @@
       }
     }
     document.getElementById('menu-btn')?.addEventListener('click', toggleMobileMenu);
+
+    // Back to top button
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 350) {
+        backToTop?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+      } else {
+        backToTop?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+      }
+    });
+    backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateCartCountBadge();
+    });
   </script>
 </body>
 
