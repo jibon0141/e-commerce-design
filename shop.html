@@ -90,6 +90,53 @@
     #mobileFilterDrawer {
       transition: transform 0.3s ease-in-out;
     }
+
+    /* ========== SHIMMER SLIDE EFFECT ========== */
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(200%);
+      }
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes textShine {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 25%, #c084fc 50%, #7c3aed 75%, #4f46e5 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textShine 4s linear infinite;
+      display: inline-block;
+    }
   </style>
 </head>
 
@@ -162,8 +209,8 @@
         <!-- Logo -->
         <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
           <div
-            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            class="shimmer-btn w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-600/25 flex-shrink-0 group-hover:scale-105 transition-all">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
               stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -172,8 +219,8 @@
           </div>
           <div class="flex flex-col">
             <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
-                class="text-indigo-600">mart</span></span>
-            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+                class="shimmer-text font-black">mart</span></span>
+            <span class="shimmer-text text-[9px] font-extrabold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
               Audio</span>
           </div>
         </a>
@@ -182,12 +229,12 @@
         <nav
           class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
           <a href="index.html"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Home</a>
           <a href="shop.html"
-            class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 rounded-full shadow-sm shadow-indigo-600/25">Shop
+            class="shimmer-btn px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 rounded-full shadow-sm shadow-indigo-600/25 transition-all">Shop
             All</a>
           <a href="index.html#collections-section"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Categories</a>
           <a href="index.html#flash-deal"
             class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
             <span class="relative flex h-2 w-2">
@@ -197,7 +244,7 @@
             Deals
           </a>
           <a href="track-order.html"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Track
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Track
             Order</a>
         </nav>
 
@@ -227,13 +274,13 @@
             aria-label="Cart">
             <i class="fa-solid fa-bag-shopping text-lg"></i>
             <span id="nav-cart-badge"
-              class="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
+              class="absolute top-1 right-1 w-4 h-4 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
           </a>
 
           <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
           <div class="hidden lg:flex items-center">
             <a href="#"
-              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/90 hover:border-indigo-200 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
               <i class="fa-regular fa-user text-xs"></i>
               <span>Sign In</span>
             </a>
@@ -265,7 +312,7 @@
         <a href="cart.html"
           class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-200 relative">
           <span id="mobile-cart-badge"
-            class="absolute top-1.5 right-2 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+            class="absolute top-1.5 right-2 w-4 h-4 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
           <i class="fa-solid fa-bag-shopping text-base mb-1 text-slate-700"></i>
           <span class="text-[11px] font-semibold">Cart</span>
         </a>
@@ -294,7 +341,7 @@
           <i class="fa-solid fa-house w-4 text-center text-slate-400"></i> Home
         </a>
         <a href="shop.html"
-          class="flex items-center gap-3 px-3.5 py-2.5 text-xs font-bold text-indigo-600 bg-indigo-50 rounded-xl">
+          class="shimmer-btn flex items-center gap-3 px-3.5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl shadow-sm shadow-indigo-600/25">
           <i class="fa-solid fa-store w-4 text-center"></i> Shop All Products
         </a>
         <a href="track-order.html"
@@ -1105,7 +1152,7 @@
     }
 
     // Add to Cart with localStorage persistence
-    function addToCart(productName, btnElement) {
+    function addToCart(productName, btnElement, redirect = false) {
       const p = productsData.find(item => item.name === productName);
       let currentCart = [];
       try {
@@ -1141,6 +1188,12 @@
 
       localStorage.setItem('easymart_cart', JSON.stringify(currentCart));
       updateCartCountBadges();
+
+      if (redirect) {
+        window.location.href = 'checkout.html';
+        return;
+      }
+
       triggerToast('Added to Cart', `${productName} added! View Bag at Cart.`);
 
       // Micro-interaction: Instant Tactile Feedback on Clicked Button
@@ -1148,7 +1201,7 @@
         btnElement.dataset.animating = 'true';
         const originalContent = btnElement.innerHTML;
         btnElement.classList.add('!bg-emerald-600', '!text-white', '!border-emerald-600', '!shadow-emerald-500/30', 'scale-95');
-        btnElement.innerHTML = `<i class="fa-solid fa-check text-[10px] sm:text-xs"></i> <span>Added!</span>`;
+        btnElement.innerHTML = `<i class="fa-solid fa-check text-[10px]"></i> <span>Added!</span>`;
 
         setTimeout(() => {
           btnElement.classList.remove('!bg-emerald-600', '!text-white', '!border-emerald-600', '!shadow-emerald-500/30', 'scale-95');
@@ -1246,7 +1299,7 @@
       let html = `
         <button type="button"
                 onclick="selectCategory(null)"
-                class="whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 ${!selectedCategory ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200'}">
+                class="whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 ${!selectedCategory ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-xs' : 'bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200'}">
           All (${productsData.length})
         </button>
       `;
@@ -1257,7 +1310,7 @@
         html += `
           <button type="button"
                   onclick="selectCategory('${cat}')"
-                  class="whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 ${active ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200'}">
+                  class="whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 ${active ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-xs' : 'bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200'}">
             ${cat} (${count})
           </button>
         `;
@@ -1576,9 +1629,12 @@
                   </div>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
-                  <a href="${p.url}" class="hidden sm:inline-block px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:border-indigo-400 text-xs font-bold transition-all">Details</a>
-                  <button onclick="addToCart('${p.name.replace(/'/g, "\\'")}', this)" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-[10.5px] sm:text-xs flex items-center gap-1.5 transition-all shadow-xs hover:shadow-indigo-500/25 active:scale-95">
-                    <i class="fa-solid fa-bag-shopping text-[10px]"></i> <span>Add</span>
+                  <a href="${p.url}" class="hidden sm:inline-flex items-center justify-center h-9 sm:h-10 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:border-slate-400 text-xs font-bold transition-all">Details</a>
+                  <button type="button" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', this, false)" class="h-9 sm:h-10 px-3 sm:px-4 rounded-xl bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-[0.98] shadow-xs" title="Add to Shopping Cart">
+                    <i class="fa-solid fa-cart-shopping text-xs text-indigo-600"></i> <span>Add to Cart</span>
+                  </button>
+                  <button type="button" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', this, true)" class="shimmer-btn h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs hover:shadow-md hover:shadow-indigo-500/25 active:scale-[0.98]" title="Buy Immediately">
+                    <i class="fa-solid fa-bolt text-xs text-amber-300"></i> <span>Buy Now</span>
                   </button>
                 </div>
               </div>
@@ -1616,7 +1672,7 @@
 
                 <!-- Quick Look Floating Pill -->
                 <div class="absolute inset-x-2 bottom-2.5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10 hidden sm:flex">
-                  <a href="${p.url}" class="px-3.5 py-1.5 bg-white/95 hover:bg-slate-900 text-slate-900 hover:text-white rounded-full text-[11px] font-bold backdrop-blur-md shadow-md border border-slate-200/80 hover:border-slate-900 flex items-center gap-1.5 transition-all">
+                  <a href="${p.url}" class="px-3.5 py-1.5 bg-white/95 hover:bg-indigo-600 text-slate-800 hover:text-white rounded-full text-[11px] font-bold backdrop-blur-md shadow-md border border-slate-200/80 hover:border-indigo-600 flex items-center gap-1.5 transition-all">
                     <i class="fa-regular fa-eye text-[10px]"></i> Quick Look
                   </a>
                 </div>
@@ -1639,18 +1695,35 @@
               </div>
             </div>
 
-            <!-- Split Action Bottom Row -->
-            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center justify-between gap-1.5">
-              <div class="min-w-0">
-                <div class="text-[9px] sm:text-[10px] text-slate-400 line-through leading-none mb-0.5">৳${p.originalPrice.toLocaleString()}</div>
-                <div class="text-xs sm:text-base font-black text-slate-900 leading-tight truncate">৳${p.price.toLocaleString()}</div>
+            <!-- Bottom Action Section: Price & Dual Action Buttons (Add to Cart + Buy Now) -->
+            <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex flex-col gap-2">
+              <div class="flex items-baseline justify-between">
+                <div class="flex items-baseline gap-1.5 min-w-0">
+                  <span class="text-xs sm:text-base font-black text-slate-900 leading-tight">৳${p.price.toLocaleString()}</span>
+                  <span class="text-[9px] sm:text-[10px] text-slate-400 line-through">৳${p.originalPrice.toLocaleString()}</span>
+                </div>
+                ${p.discountPercent > 0 ? `
+                  <span class="text-[8.5px] sm:text-[9.5px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex-shrink-0">Save ${p.discountPercent}%</span>
+                ` : ''}
               </div>
-              <button type="button"
-                      onclick="addToCart('${p.name.replace(/'/g, "\\'")}', this)"
-                      class="flex-shrink-0 h-7 sm:h-8 px-2.5 sm:px-3 rounded-lg sm:rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-[10.5px] sm:text-xs flex items-center gap-1 sm:gap-1.5 transition-all shadow-xs hover:shadow-indigo-500/25 active:scale-95 group/btn">
-                <i class="fa-solid fa-bag-shopping text-[9px] sm:text-[10px]"></i>
-                <span>Add</span>
-              </button>
+
+              <!-- Dual Action Buttons: Add to Cart + Buy Now -->
+              <div class="flex flex-col sm:grid sm:grid-cols-2 gap-1.5 sm:gap-2">
+                <button type="button"
+                        onclick="addToCart('${p.name.replace(/'/g, "\\'")}', this, false)"
+                        class="w-full h-9 sm:h-10 px-2.5 rounded-xl bg-indigo-50/80 hover:bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] border border-indigo-200/90 shadow-xs"
+                        title="Add to Shopping Cart">
+                  <i class="fa-solid fa-cart-shopping text-xs text-indigo-600"></i>
+                  <span>Add to Cart</span>
+                </button>
+                <button type="button"
+                        onclick="addToCart('${p.name.replace(/'/g, "\\'")}', this, true)"
+                        class="shimmer-btn w-full h-9 sm:h-10 px-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md hover:shadow-indigo-500/25 active:scale-[0.98]"
+                        title="Buy Immediately">
+                  <i class="fa-solid fa-bolt text-xs text-amber-300"></i>
+                  <span>Buy Now</span>
+                </button>
+              </div>
             </div>
           </div>
         `).join('');

@@ -84,9 +84,28 @@
       left: 0;
       width: 50%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
       transform: skewX(-20deg);
       animation: shine 3.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes textShine {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 25%, #c084fc 50%, #7c3aed 75%, #4f46e5 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textShine 4s linear infinite;
+      display: inline-block;
     }
   </style>
 </head>
@@ -160,8 +179,8 @@
         <!-- Logo -->
         <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
           <div
-            class="w-9 h-9 sm:w-10 sm:h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 group-hover:bg-indigo-700 transition-colors">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            class="shimmer-btn w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-600/25 flex-shrink-0 group-hover:scale-105 transition-all">
+            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
               stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -170,8 +189,8 @@
           </div>
           <div class="flex flex-col">
             <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight leading-none">easy<span
-                class="text-indigo-600">mart</span></span>
-            <span class="text-[9px] text-slate-400 font-semibold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
+                class="shimmer-text font-black">mart</span></span>
+            <span class="shimmer-text text-[9px] font-extrabold tracking-wider uppercase hidden xs:block mt-0.5">Tech &
               Audio</span>
           </div>
         </a>
@@ -180,12 +199,12 @@
         <nav
           class="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
           <a href="index.html"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Home</a>
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Home</a>
           <a href="shop.html"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Shop
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Shop
             All</a>
           <a href="index.html#collections-section"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Categories</a>
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Categories</a>
           <a href="index.html#flash-deal"
             class="px-4 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-white rounded-full transition-all flex items-center gap-1.5">
             <span class="relative flex h-2 w-2">
@@ -195,7 +214,7 @@
             Deals
           </a>
           <a href="track-order.html"
-            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white rounded-full transition-all">Track
+            class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-white rounded-full transition-all">Track
             Order</a>
         </nav>
 
@@ -222,17 +241,17 @@
 
           <!-- Desktop Cart Button (Active) -->
           <a href="cart.html"
-            class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm shadow-indigo-600/25 transition-colors"
+            class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-50 to-violet-50 text-indigo-700 border border-indigo-200/90 shadow-xs transition-colors"
             aria-label="Cart">
             <i class="fa-solid fa-bag-shopping text-base"></i>
             <span id="nav-cart-badge"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-indigo-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm">0</span>
+              class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-xs">0</span>
           </a>
 
           <!-- Normal Sign In Button (Sleek Outline / Brand Soft Style) -->
           <div class="hidden lg:flex items-center">
             <a href="#"
-              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/60 border border-slate-200/90 hover:border-indigo-300 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/90 hover:border-indigo-200 px-4 py-2.5 rounded-xl transition-all shadow-xs active:scale-95">
               <i class="fa-regular fa-user text-xs"></i>
               <span>Sign In</span>
             </a>
@@ -429,7 +448,7 @@
             </p>
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
               <a href="shop.html"
-                class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs transition-colors shadow-sm flex items-center gap-2">
+                class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs transition-colors shadow-sm flex items-center gap-2">
                 <i class="fa-solid fa-compass"></i>
                 <span>Explore Tech Catalog</span>
               </a>
@@ -514,7 +533,7 @@
                     class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs font-semibold uppercase text-slate-800 placeholder:text-slate-400 outline-none focus:border-indigo-600 focus:bg-white transition-colors">
                 </div>
                 <button type="button" onclick="applyCoupon()"
-                  class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors">
+                  class="px-4 py-2 rounded-xl bg-indigo-50/90 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 font-bold text-xs transition-colors">
                   Apply
                 </button>
               </div>
